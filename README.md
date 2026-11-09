@@ -1,17 +1,21 @@
 # Akustik Yön Bulma Simülasyonu
 
+**Canlı demo:** https://berkedaban.github.io/akustik-yon-bulma-demo/
+
 Dört mikrofonlu bir dizinin ses kaynağının geliş yönünü nasıl tahmin edebileceğini etkileşimli olarak gösteren bitirme projesi demosu.
 
-## Deneyde değiştirilebilen parametreler
+## Deney ayarları
 
-- Kaynak açısı
+- Gerçek kaynak açısı
 - Mikrofon aralığı
 - Sinyal/gürültü oranı
 - Yankı seviyesi
-- Her açıdaki tekrar sayısı
+- Açı başına tekrar sayısı
+
+Açı taraması, kaynak yönü ile tahmini karşılaştırır ve ortalama açı hatasıyla ±5° içindeki ölçüm oranını gösterir. Site, tarama sırasında ilerleme bilgisini canlı verir.
 
 ## Model kapsamı
 
-Simülasyon sentetik sinyal, 2B düzlem dalga varsayımı, dört eşleşmiş mikrofon ve GCC-PHAT tabanlı yön kestirimi kullanır. Gerçek oda veya mikrofon ölçümü değildir; donanım başarımını temsil etmez.
+Simülasyon sentetik sinyal, 2B düzlem dalga varsayımı, eşleşmiş dört mikrofon ve GCC-PHAT tabanlı kestirim kullanır. Gerçek oda veya mikrofon ölçümü değildir; donanım başarımını temsil etmez. Gerçek prototipte kalibrasyon ve ölçümle doğrulanmalıdır.
 
-Site, Python veya NumPy gerektirmeden modern bir tarayıcıda çalışır. Kaynak dosyası `site/index.html` konumundadır.
+Python, NumPy veya harici görsel kütüphaneler gerektirmez; güncel bir tarayıcıda çalışır. Ana dosya `site/index.html` konumundadır.
