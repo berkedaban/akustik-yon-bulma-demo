@@ -29,7 +29,7 @@
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      background: var(--paper);
+      background: radial-gradient(ellipse at 82% 2%, rgba(8,127,120,.075), transparent 34rem), var(--paper);
       color: var(--ink);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
       line-height: 1.45;
@@ -45,7 +45,8 @@
     .subhead { max-width:670px; margin:12px 0 0; color:var(--muted); font-size:15px; }
     .intro-note { max-width:235px; padding:0 0 4px 17px; border-left:2px solid var(--gold); color:#61717a; font-size:12px; }
     .workbench { display:grid; grid-template-columns:300px minmax(0,1fr); gap:18px; align-items:stretch; min-width:0; }
-    .controls, .visual-panel, .chart-panel { background:var(--panel); border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow); }
+    .controls, .visual-panel, .chart-panel { background:rgba(255,255,255,.94); border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow); transition:box-shadow .24s ease,border-color .24s ease; }
+    .controls:hover, .visual-panel:hover, .chart-panel:hover { border-color:#c9dad4; box-shadow:0 22px 56px rgba(24,43,58,.11); }
     .controls { padding:22px 21px 18px; min-width:0; }
     .panel-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:18px; }
     .panel-kicker { margin:0 0 4px; color:var(--muted); font-size:10px; font-weight:760; letter-spacing:.12em; text-transform:uppercase; }
@@ -62,6 +63,10 @@
     .run { display:flex; align-items:center; justify-content:center; width:100%; min-height:45px; border:0; border-radius:10px; background:var(--teal); color:white; font:inherit; font-size:14px; font-weight:720; cursor:pointer; transition:background .18s,transform .18s; }
     .run:hover { background:#056b66; transform:translateY(-1px); }
     .run:focus-visible, input:focus-visible, select:focus-visible { outline:3px solid #89c9c1; outline-offset:2px; }
+    .run:disabled { cursor:progress; opacity:.82; }
+    .run[aria-busy="true"]::after { content:""; width:13px; height:13px; margin-left:9px; border:2px solid rgba(255,255,255,.45); border-top-color:#fff; border-radius:50%; animation:spin .75s linear infinite; }
+    .scan-progress { height:5px; margin-top:12px; overflow:hidden; border-radius:99px; background:#e8efec; }
+    .scan-progress span { display:block; width:0; height:100%; border-radius:inherit; background:linear-gradient(90deg,#087f78,#5ab7a3); transition:width .28s ease; }
     .hint { margin:12px 0 0; color:#6f8187; font-size:11px; }
     .results { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:19px; }
     .metric { padding:12px 12px 11px; border-radius:11px; background:#f2f7f5; }
@@ -72,8 +77,8 @@
     .visual-panel { padding:20px 22px 14px; min-height:410px; min-width:0; }
     .visual-head { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
     .live-label { display:flex; align-items:center; gap:7px; color:#74868a; font-size:11px; font-weight:700; white-space:nowrap; }
-    .live-dot { width:7px; height:7px; border-radius:50%; background:#42a990; box-shadow:0 0 0 4px #e6f3ee; }
-    .diagram { width:100%; height:320px; display:block; margin-top:5px; }
+    .live-dot { width:7px; height:7px; border-radius:50%; background:#42a990; box-shadow:0 0 0 4px #e6f3ee; animation:live-pulse 2s ease-out infinite; }
+    .diagram { width:100%; height:320px; display:block; margin-top:5px; overflow:visible; shape-rendering:geometricPrecision; text-rendering:geometricPrecision; }
     .diagram text { font-family:Inter,ui-sans-serif,system-ui,sans-serif; }
     .legend { display:flex; flex-wrap:wrap; justify-content:center; gap:18px; margin-top:0; color:#61767b; font-size:11px; }
     .legend-item { display:flex; align-items:center; gap:7px; }
@@ -83,7 +88,7 @@
     .chart-panel { padding:18px 21px 14px; min-width:0; }
     .chart-head { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; }
     .chart-note { color:#829198; font-size:11px; text-align:right; }
-    .chart { width:100%; height:220px; display:block; margin-top:4px; }
+    .chart { width:100%; height:220px; display:block; margin-top:4px; overflow:visible; shape-rendering:geometricPrecision; text-rendering:geometricPrecision; }
     .chart text { font-family:Inter,ui-sans-serif,system-ui,sans-serif; fill:#71828a; font-size:10px; }
     .footer { display:flex; justify-content:space-between; align-items:flex-start; gap:20px; margin-top:16px; color:#78888b; font-size:11px; }
     .footer strong { color:#526a70; font-weight:700; }
@@ -120,6 +125,8 @@
     @keyframes dash-flow { to { stroke-dashoffset:-24; } }
     @keyframes chart-draw { from { stroke-dasharray:900; stroke-dashoffset:900; } to { stroke-dasharray:900; stroke-dashoffset:0; } }
     @keyframes point-pop { from { opacity:0; transform:scale(.55); } to { opacity:1; transform:scale(1); } }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    @keyframes live-pulse { 0%,100% { box-shadow:0 0 0 3px #e6f3ee; } 50% { box-shadow:0 0 0 7px rgba(230,243,238,0); } }
     .topline { animation:rise-in .5s both; }
     .intro { animation:rise-in .55s .06s both; }
     .controls { animation:rise-in .6s .12s both; }
@@ -127,13 +134,13 @@
     .chart-panel { animation:rise-in .6s .25s both; }
     .metric { transition:transform .2s ease,background-color .2s ease; }
     .metric:hover { transform:translateY(-2px); background:#eaf4f0; }
-    .source-pulse { transform-box:fill-box; transform-origin:center; animation:signal-pulse 2.2s ease-out infinite; }
+    .source-pulse { transform-box:fill-box; transform-origin:center; animation:signal-pulse 2.6s ease-out infinite; }
+    .pulse-b { animation-delay:1.3s; }
     .mic-node { transform-box:fill-box; transform-origin:center; animation:mic-ping 2.4s ease-in-out infinite; }
     .wave-direct { stroke-dasharray:10 10; animation:dash-flow 1.4s linear infinite; }
     .wave-echo { stroke-dasharray:7 6; animation:dash-flow 2s linear infinite; }
     .chart-line { animation:chart-draw 1.15s ease-out both; }
     .chart-point { transform-box:fill-box; transform-origin:center; animation:point-pop .32s ease-out both; }
-    .run:disabled { cursor:progress; opacity:.78; }
     @media (prefers-reduced-motion: reduce) {
       *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition:none !important; }
       .metric:hover { transform:none; }
@@ -191,7 +198,8 @@
             <option value="20">20 tekrar · daha kararlı</option>
           </select>
         </div>
-        <button class="run" id="runButton" type="button">Açı taramasını çalıştır</button>
+      <button class="run" id="runButton" type="button">Açı taramasını çalıştır</button>
+        <div class="scan-progress" role="progressbar" aria-label="Açı taraması ilerlemesi" aria-valuemin="0" aria-valuemax="9" aria-valuenow="0"><span id="scanProgressBar"></span></div>
         <p class="hint" id="runHint" aria-live="polite">−60° ile +60° arasındaki 9 kaynak yönü taranır.</p>
 
         <div class="results" aria-live="polite">
@@ -406,7 +414,7 @@
         s += `<line class="wave-direct" x1="${source[0]}" y1="${source[1]}" x2="${cx}" y2="${cy}" stroke="#087f78" stroke-width="2.5" marker-end="url(#arrowTeal)"/>`;
         s += `<line class="wave-echo" x1="${echoSource[0]}" y1="${echoSource[1]}" x2="${cx}" y2="${cy}" stroke="#d66a4f" stroke-width="${1 + echoLevel*2.5}" opacity="${0.35 + echoLevel*0.65}" marker-end="url(#arrowCoral)"/>`;
         s += `<line x1="${cx}" y1="${cy}" x2="${est[0]}" y2="${est[1]}" stroke="#547fbd" stroke-width="2" stroke-dasharray="3 5"/>`;
-        s += `<circle class="source-pulse" cx="${source[0]}" cy="${source[1]}" r="14" fill="none" stroke="#087f78" stroke-width="2"/><circle cx="${source[0]}" cy="${source[1]}" r="13" fill="#e4f3ef" stroke="#087f78" stroke-width="2"/><circle cx="${source[0]}" cy="${source[1]}" r="4" fill="#087f78"/>`;
+        s += `<circle class="source-pulse pulse-a" cx="${source[0]}" cy="${source[1]}" r="14" fill="none" stroke="#087f78" stroke-width="2"/><circle class="source-pulse pulse-b" cx="${source[0]}" cy="${source[1]}" r="14" fill="none" stroke="#087f78" stroke-width="2"/><circle cx="${source[0]}" cy="${source[1]}" r="13" fill="#e4f3ef" stroke="#087f78" stroke-width="2"/><circle cx="${source[0]}" cy="${source[1]}" r="4" fill="#087f78"/>`;
         const sourceLabelY = source[1] < 100 ? source[1] + 27 : source[1] - 19;
         s += `<text x="${source[0]}" y="${sourceLabelY}" text-anchor="middle" fill="#176c66" font-size="${font+1}" font-weight="700">Kaynak ${angle}°</text>`;
         if (echoLevel > 0.02) {
@@ -431,9 +439,9 @@
         const x0=narrow?46:62, y0=narrow?22:18, w=narrow?286:670, h=narrow?142:160;
         $("chart").setAttribute("viewBox", narrow ? "0 0 380 230" : "0 0 760 220");
         const px = (v) => x0 + (v+75)/150*w;
-        const py = (v) => y0 + (75-v)/150*h;
+        const py = (v) => y0 + (90-v)/180*h;
         let s = `<rect x="0" y="0" width="${narrow?380:760}" height="230" fill="transparent"/>`;
-        [-60,-30,0,30,60].forEach(v => {
+        [-90,-60,-30,0,30,60,90].forEach(v => {
           s += `<line x1="${px(v)}" y1="${y0}" x2="${px(v)}" y2="${y0+h}" stroke="#e7eeeb"/>`;
           s += `<line x1="${x0}" y1="${py(v)}" x2="${x0+w}" y2="${py(v)}" stroke="#e7eeeb"/>`;
           s += `<text x="${px(v)}" y="${y0+h+17}" text-anchor="middle">${v}°</text><text x="${x0-9}" y="${py(v)+3}" text-anchor="end">${v}°</text>`;
@@ -470,21 +478,37 @@
         $("estimateSub").textContent = `gerçek ${angle > 0 ? "+" : ""}${angle}° · tek kayıt`;
         $("sceneContent").innerHTML = sceneMarkup(angle, estimateAngle, spacing, echo, snr);
       }
-      function runSweep() {
+      async function runSweep() {
         const btn = $("runButton");
+        const progress = document.querySelector(".scan-progress");
+        const progressBar = $("scanProgressBar");
+        const total = anglesForScan.length;
+        Object.values(controls).forEach(el => { el.disabled = true; });
         btn.disabled = true;
+        btn.setAttribute("aria-busy", "true");
         btn.textContent = "Tarama sürüyor…";
-        $("runHint").textContent = "Her kaynak açısı için tekrarlı sentetik kayıt hesaplanıyor.";
+        progress.setAttribute("aria-valuenow", "0");
+        progressBar.style.width = "0%";
+        $("runHint").textContent = "Sentetik ölçümler hazırlanıyor…";
         randomState = 20261109 + Number(controls.angle.value)*101 + Number(controls.echo.value)*7 + Number(controls.snr.value);
         const snr=Number(controls.snr.value), echo=Number(controls.echo.value)/100, side=Number(controls.spacing.value)/100;
         const reps=Number(controls.repeats.value);
         const rows=[]; const allErrors=[];
-        for (const angle of anglesForScan) {
+        for (let angleIndex=0; angleIndex<total; angleIndex++) {
+          const angle = anglesForScan[angleIndex];
           const estimates=[];
-          for (let n=0; n<reps; n++) estimates.push(runOne(angle,snr,echo,side));
+          for (let n=0; n<reps; n++) {
+            const estimateValue = runOne(angle,snr,echo,side);
+            estimates.push(estimateValue);
+            allErrors.push(Math.abs(circularError(estimateValue,angle)));
+            const position = angleIndex + (n+1)/reps;
+            progress.setAttribute("aria-valuenow", position.toFixed(2));
+            progressBar.style.width = `${position/total*100}%`;
+            $("runHint").textContent = `Açı ${angleIndex+1}/${total} · ${angle}° yönü ölçülüyor (${n+1}/${reps}).`;
+            await new Promise(resolve => requestAnimationFrame(resolve));
+          }
           const mean = estimates.reduce((a,b)=>a+b,0)/estimates.length;
           rows.push({angle,mean});
-          estimates.forEach(v => allErrors.push(Math.abs(circularError(v,angle))));
         }
         const mae=allErrors.reduce((a,b)=>a+b,0)/allErrors.length;
         const within=allErrors.filter(v=>v<=5).length/allErrors.length*100;
@@ -498,6 +522,10 @@
         $("chartNote").innerHTML=`${reps} tekrar / açı<br>toplam ${allErrors.length} kayıt`;
         $("runHint").textContent="Tarama tamamlandı. Ayarları değiştirip yeniden çalıştırabilirsiniz.";
         btn.disabled=false;
+        Object.values(controls).forEach(el => { el.disabled = false; });
+        btn.removeAttribute("aria-busy");
+        progress.setAttribute("aria-valuenow", String(total));
+        progressBar.style.width = "100%";
         btn.textContent="Açı taramasını yeniden çalıştır";
       }
       Object.values(controls).forEach(el => el.addEventListener("input", () => {
@@ -507,6 +535,8 @@
         $("maeSub").textContent="yeniden tarama bekleniyor"; $("successSub").textContent="yeniden tarama bekleniyor";
         $("chartContent").innerHTML=chartMarkup([]);
         $("chartNote").innerHTML="Ayar değişti<br>taramayı yeniden çalıştırın";
+        document.querySelector(".scan-progress").setAttribute("aria-valuenow", "0");
+        $("scanProgressBar").style.width = "0%";
       }));
       $("runButton").addEventListener("click", runSweep);
       window.addEventListener("resize", () => {
