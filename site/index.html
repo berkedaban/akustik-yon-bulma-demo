@@ -44,6 +44,11 @@
     h1 { margin:0; max-width:790px; font-size:clamp(30px,4vw,48px); line-height:1.04; letter-spacing:-.045em; font-weight:720; }
     .subhead { max-width:670px; margin:12px 0 0; color:var(--muted); font-size:15px; }
     .intro-note { max-width:235px; padding:0 0 4px 17px; border-left:2px solid var(--gold); color:#61717a; font-size:12px; }
+    .method-steps { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:0 0 18px; padding:15px 17px; border:1px solid #dce7e1; border-radius:15px; background:rgba(255,255,255,.72); }
+    .method-step { display:flex; align-items:flex-start; gap:11px; min-width:0; }
+    .method-step-num { display:grid; place-items:center; flex:none; width:26px; height:26px; border-radius:9px; background:#e6f2ec; color:#147b6c; font-size:10px; font-weight:800; }
+    .method-step strong { display:block; margin:1px 0 3px; color:#29443e; font-size:12px; }
+    .method-step p { margin:0; color:#71817c; font-size:11px; line-height:1.5; }
     .workbench { display:grid; grid-template-columns:300px minmax(0,1fr); gap:18px; align-items:stretch; min-width:0; }
     .controls, .visual-panel, .chart-panel { background:rgba(255,255,255,.94); border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow); transition:box-shadow .24s ease,border-color .24s ease; }
     .controls:hover, .visual-panel:hover, .chart-panel:hover { border-color:#c9dad4; box-shadow:0 22px 56px rgba(24,43,58,.11); }
@@ -187,6 +192,7 @@
     @media (max-width:520px) {
       .page { width:100%; padding:16px 12px; }
       .topline { margin-bottom:20px; }
+      .method-steps { grid-template-columns:minmax(0,1fr); gap:12px; padding:13px; }
       .brand { min-width:0; font-size:10px; }
       .tag { max-width:116px; white-space:normal; text-align:center; font-size:9px; }
       .visual-panel { padding:16px 12px 12px; min-height:0; }
@@ -245,6 +251,12 @@
         <p class="subhead">Mikrofonlara ulaşma zamanları arasındaki küçük farkları kullanarak ses kaynağının geliş açısını tahmin ediyoruz.</p>
       </div>
       <div class="intro-note"><strong>Bu ekranda:</strong> kaynağın açısını, gürültüyü ve yankıyı değiştirip yön tahmini ile hata grafiğinin nasıl etkilendiğini inceleyin.</div>
+    </section>
+
+    <section class="method-steps" aria-label="Akustik yön bulma sistemi nasıl çalışır">
+      <div class="method-step"><span class="method-step-num">01</span><div><strong>Dört mikrofon aynı sesi kaydeder</strong><p>Mikrofonların konumları ve aralıkları önceden bilinir.</p></div></div>
+      <div class="method-step"><span class="method-step-num">02</span><div><strong>Geliş zamanları karşılaştırılır</strong><p>GCC‑PHAT çapraz korelasyonu, kanallar arasındaki küçük gecikmeleri (TDOA) tahmin eder.</p></div></div>
+      <div class="method-step"><span class="method-step-num">03</span><div><strong>Gecikmeden geliş açısı bulunur</strong><p>Dizi geometrisiyle yön hesaplanır; farklı açılardaki hata ve gürültü etkisi incelenir.</p></div></div>
     </section>
 
     <div class="workbench">
@@ -338,6 +350,11 @@
         </div>
         <span class="method-tag">TDOA + YANKI MENZİLİ</span>
       </div>
+      <section class="method-steps" aria-label="Ağaç gövdesi haritalama sistemi nasıl çalışır">
+        <div class="method-step"><span class="method-step-num">01</span><div><strong>Ses darbesi gönderilir</strong><p>Verici kısa bir akustik darbe yollar; dört mikrofon yankıları birlikte kaydeder.</p></div></div>
+        <div class="method-step"><span class="method-step-num">02</span><div><strong>Gövde yankısı ölçülür</strong><p>Yankının dönüş gecikmesi yaklaşık menzili, mikrofonlar arası TDOA ise geliş yönünü verir.</p></div></div>
+        <div class="method-step"><span class="method-step-num">03</span><div><strong>Yön ve menzil haritaya işlenir</strong><p>Ölçümler birleştirilerek tahmini X/Y ağacı konumları ve konum hatası gösterilir.</p></div></div>
+      </section>
       <div class="mapper-layout">
         <div class="mapper-map-wrap">
           <div class="mapper-map-topline"><span><i class="live-dot" aria-hidden="true"></i> AKUSTİK SAHA TARAMASI</span><span id="mapSceneStatus">Beklemede · 100 × 60 m</span></div>
