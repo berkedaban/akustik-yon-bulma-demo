@@ -12,7 +12,11 @@ Dört mikrofonlu bir dizinin ses kaynağının geliş yönünü nasıl tahmin ed
 - Yankı seviyesi
 - Açı başına tekrar sayısı
 
-Açı taraması, kaynak yönü ile tahmini karşılaştırır ve ortalama açı hatasıyla ±5° içindeki ölçüm oranını gösterir. Site, tarama sırasında ilerleme bilgisini canlı verir.
+Açı taraması kaynak yönü ile tahmini karşılaştırır ve ortalama açı hatasıyla ±5° içindeki ölçüm oranını gösterir. Tarama ilerlemesi canlı gösterilir.
+
+## Orman sahası görseli
+
+Dört mikrofon, ses kaynağı, yansıma ve yön kestirimi şematik bir ormanlık alan haritası üzerinde canlandırılır. Haritadaki ağaç örtüsü ve topoğrafya **temsili çizimdir**; gerçek arazi verisi değildir. Gerçek saha çalışmasında GPS koordinatları, harita/DEM verisi ve ölçülmüş ağaç/sensör konumlarıyla değiştirilmelidir.
 
 ## Model kapsamı
 
