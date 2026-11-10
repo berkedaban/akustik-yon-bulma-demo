@@ -146,11 +146,17 @@
     .mapper-lower-head h3 { margin:0; font-size:19px; letter-spacing:-.025em; }
     .mapper-lower-head p { margin:5px 0 0; color:#72827e; font-size:12px; }
     .mapper-table-wrap { overflow-x:auto; border:1px solid #dce6e0; border-radius:13px; background:rgba(255,255,255,.76); }
-    .mapper-table { width:100%; border-collapse:collapse; min-width:580px; font-size:12px; text-align:left; }
+    .mapper-table { width:100%; border-collapse:collapse; min-width:700px; font-size:12px; text-align:left; }
     .mapper-table th { padding:11px 13px; background:#edf4ef; color:#667973; font-size:10px; font-weight:750; letter-spacing:.06em; text-transform:uppercase; white-space:nowrap; }
     .mapper-table td { padding:10px 13px; border-top:1px solid #e8eeea; color:#314a43; font-variant-numeric:tabular-nums; }
     .mapper-table tbody tr { animation:row-reveal .38s both; animation-delay:var(--row-delay,0ms); }
     .mapper-table .coord { color:#137c6c; font-weight:750; }
+    .mapper-table .tree-missed { background:#fbf8ef; }
+    .mapper-table .tree-missed td { color:#7d6a42; }
+    .mapper-state { display:inline-flex; align-items:center; gap:6px; font-size:10px; font-weight:750; white-space:nowrap; }
+    .mapper-state.found { color:#1d725a; }
+    .mapper-state.missed { color:#98783b; }
+    .mapper-state::before { content:""; width:7px; height:7px; border-radius:50%; background:currentColor; }
     .tree-id { display:inline-flex; align-items:center; gap:8px; font-weight:700; }
     .tree-id::before { content:""; width:8px; height:8px; border-radius:50%; background:#4bbda0; box-shadow:0 0 0 3px #e0f2eb; }
     .mapper-empty { padding:24px !important; text-align:center; color:#80908a !important; }
@@ -543,8 +549,8 @@
         </div>
         <div class="mapper-table-wrap">
           <table class="mapper-table" aria-label="Yankı ölçümünden tespit edilen ağaçların koordinat listesi">
-            <thead><tr><th scope="col">Ağaç</th><th scope="col">X · saha ekseni (m)</th><th scope="col">Y · saha ekseni (m)</th><th scope="col">Menzil (m)</th><th scope="col">Yön (°)</th><th scope="col">Konum hatası (m)</th></tr></thead>
-            <tbody id="mappedTreeRows"><tr><td class="mapper-empty" colspan="6">Yankı taraması başlatıldığında tahmini ağaç konumları burada listelenir.</td></tr></tbody>
+            <thead><tr><th scope="col">Ağaç</th><th scope="col">X · saha ekseni (m)</th><th scope="col">Y · saha ekseni (m)</th><th scope="col">Menzil (m)</th><th scope="col">Yön (°)</th><th scope="col">Konum hatası (m)</th><th scope="col">Algılama durumu</th></tr></thead>
+            <tbody id="mappedTreeRows"><tr><td class="mapper-empty" colspan="7">Yankı taraması başlatıldığında tahmini ağaç konumları burada listelenir.</td></tr></tbody>
           </table>
         </div>
         <div class="compare-head">
@@ -955,7 +961,13 @@
         $("mapperForestContent").innerHTML=mapperMarkup(count,detections);
         latestMapDetections=detections;
         const rows=$("mappedTreeRows");
-        rows.innerHTML=detections.length?detections.map((d,index)=>`<tr style="--row-delay:${Math.min(index,18)*45}ms"><td><span class="tree-id">Ağaç ${String(d.tree.index+1).padStart(2,"0")}</span></td><td class="coord">${d.x.toFixed(1)}</td><td class="coord">${d.y.toFixed(1)}</td><td>${d.range.toFixed(1)}</td><td>${d.bearing>=0?"+":""}${d.bearing.toFixed(1)}°</td><td>${d.error.toFixed(1)}</td></tr>`).join(""):`<tr><td class="mapper-empty" colspan="6">Bu ayarlarda güvenilir yankı algılanmadı. Sinyal/gürültü veya yansıma değerini artırıp yeniden deneyin.</td></tr>`;
+        const foundByIndex=new Map(detections.map(d=>[d.tree.index,d]));
+        rows.innerHTML=forestTrees.slice(0,count).map((tree,index)=>{
+          const d=foundByIndex.get(tree.index), label=`Ağaç ${String(tree.index+1).padStart(2,"0")}`;
+          return d
+            ? `<tr style="--row-delay:${Math.min(index,18)*45}ms"><td><span class="tree-id">${label}</span></td><td class="coord">${d.x.toFixed(1)}</td><td class="coord">${d.y.toFixed(1)}</td><td>${d.range.toFixed(1)}</td><td>${d.bearing>=0?"+":""}${d.bearing.toFixed(1)}°</td><td>${d.error.toFixed(1)}</td><td><span class="mapper-state found">Bulundu</span></td></tr>`
+            : `<tr class="tree-missed" style="--row-delay:${Math.min(index,18)*45}ms"><td><span class="tree-id">${label}</span></td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td><span class="mapper-state missed" title="Yankı gücü bu senaryodaki algılama eşiğinin altında">Algılanmadı · zayıf yankı</span></td></tr>`;
+        }).join("");
         $("mappedTrees").textContent=`${detections.length} / ${count}`;
         $("mapError").textContent=errors.length?`${(errors.reduce((a,b)=>a+b,0)/errors.length).toFixed(1)} m`:"—";
         $("mapCoverage").textContent=`${Math.round(detections.length/count*100)}%`;
