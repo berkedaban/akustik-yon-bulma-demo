@@ -358,7 +358,16 @@
     .real-status { min-height:38px; margin:12px 0 0; padding:9px 11px; border-radius:9px; background:#edf4eb; color:#526d5c; font-size:11px; line-height:1.5; }
     .real-status[data-kind="error"] { background:#fbefea; color:#92533c; }
     .real-status[data-kind="success"] { background:#e7f4ec; color:#23624e; }
-    .real-metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:11px; }
+    .real-setup { margin:0 0 14px; padding:16px; border:1px solid #d6e3d6; border-radius:15px; background:rgba(255,255,252,.78); }
+    .real-setup-head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:12px; }
+    .real-setup-head h3 { margin:0; color:#284c3d; font-size:14px; }
+    .real-setup-head p { margin:4px 0 0; color:#718278; font-size:10px; line-height:1.5; }
+    .real-setup-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)) auto; gap:9px; align-items:end; }
+    .real-input-label { display:block; margin-bottom:5px; color:#536d5e; font-size:10px; font-weight:750; }
+    .real-number { width:100%; min-width:0; min-height:39px; border:1px solid #ccdbce; border-radius:9px; padding:7px 9px; color:#294b3d; background:#fff; font:inherit; font-size:12px; font-variant-numeric:tabular-nums; }
+    .real-setup .run { width:auto; min-width:150px; min-height:39px; padding:0 12px; font-size:11px; }
+    .real-cal-status { margin:10px 0 0; padding:9px 11px; border-radius:9px; background:#edf4eb; color:#607669; font-size:10px; line-height:1.5; }
+    .real-metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-top:11px; }
     .real-metric { min-width:0; padding:10px; border-radius:9px; background:#eff5ed; }
     .real-metric small { display:block; color:#6a8172; font-size:9px; font-weight:750; letter-spacing:.04em; text-transform:uppercase; }
     .real-metric strong { display:block; margin-top:4px; color:#1b5544; font-size:18px; font-variant-numeric:tabular-nums; }
@@ -375,8 +384,8 @@
     .real-steps strong { display:block; margin-bottom:4px; color:#315443; font-size:11px; }
     .real-steps p { margin:0; color:#6c7e72; font-size:10px; line-height:1.55; }
     .real-workflow-note { margin:10px 0 0; padding:10px 11px; border-left:3px solid #8bb99a; border-radius:0 8px 8px 0; background:#eef5ec; color:#617669; font-size:10px; line-height:1.55; }
-    @media (max-width:760px) { .real-grid { grid-template-columns:minmax(0,1fr); } .real-head { display:block; } .real-badge { display:inline-block; margin-top:10px; } }
-    @media (max-width:520px) { .real-section { padding:16px 12px; border-radius:17px; } .real-card { padding:14px; } .real-metrics { gap:6px; } .real-metric { padding:8px 6px; } .real-metric strong { font-size:15px; } .real-actions .run { flex:1; min-width:120px; } .real-steps { grid-template-columns:minmax(0,1fr); } .real-workflow { padding:13px; } }
+    @media (max-width:760px) { .real-grid { grid-template-columns:minmax(0,1fr); } .real-head { display:block; } .real-badge { display:inline-block; margin-top:10px; } .real-setup-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .real-setup .run { width:100%; } }
+    @media (max-width:520px) { .real-section { padding:16px 12px; border-radius:17px; } .real-card { padding:14px; } .real-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; } .real-metric { padding:8px 6px; } .real-metric strong { font-size:15px; } .real-actions .run { flex:1; min-width:120px; } .real-steps { grid-template-columns:minmax(0,1fr); } .real-workflow { padding:13px; } .real-setup { padding:13px; } .real-setup-grid { grid-template-columns:minmax(0,1fr); } }
   </style>
 </head>
 <body>
@@ -614,6 +623,16 @@
         <div><p class="panel-kicker">Deneysel mod · gerçek ses verisi</p><h2 id="realTitle">Dört kanallı kayıtla yön kestirimi</h2><p>Ses kartını seçip tarayıcıdan kayıt alın veya dört mikrofonla eşzamanlı kaydedilmiş WAV dosyası yükleyin. GCC‑PHAT, gerçek kanallar arasındaki gecikmeleri hesaplar; analiz bu tarayıcıda yapılır.</p></div>
         <span class="real-badge">SENTETİK DEĞİL · HAM KAYIT</span>
       </div>
+      <div class="real-setup" aria-labelledby="realSetupTitle">
+        <div class="real-setup-head"><div><h3 id="realSetupTitle">Ölçüm geometrisi ve referans</h3><p>Önce mikrofon dizisinin gerçek ölçülerini girin. Kaynak açısı ve uzaklığı, kurduğunuz referans denemesini tanımlar.</p></div></div>
+        <div class="real-setup-grid">
+          <label><span class="real-input-label">Mikrofonlar arası kenar aralığı</span><input id="realMicSpacing" class="real-number" type="number" min="5" max="300" step="0.5" value="70" inputmode="decimal" aria-label="Mikrofonlar arası kenar aralığı santimetre"></label>
+          <label><span class="real-input-label">Referans hoparlör açısı</span><input id="realRefAngle" class="real-number" type="number" min="-180" max="180" step="1" placeholder="Örn. 0" inputmode="decimal" aria-label="Bilinen kaynak geliş açısı derece"></label>
+          <label><span class="real-input-label">Hoparlörün dizi merkezine uzaklığı</span><input id="realSourceDistance" class="real-number" type="number" min="0.2" max="100" step="0.1" placeholder="Örn. 2.0" inputmode="decimal" aria-label="Ses kaynağının mikrofon dizisi merkezine uzaklığı metre"></label>
+          <button class="run secondary" id="realApplyGeometry" type="button">Ayarları doğrula ve kaydet</button>
+        </div>
+        <p class="real-cal-status" id="realCalibrationStatus" role="status" aria-live="polite">Aralık, hesapta kullanılacak kare dizinin kenar uzunluğudur. Bilinen açı girilirse kayıt sonrası açısal fark gösterilir. Hoparlör mesafesi deney notudur; bu DOA hesabı mesafeyi bulmaz.</p>
+      </div>
       <div class="real-grid">
         <div class="real-card">
           <h3>Canlı mikrofon kaydı</h3>
@@ -633,6 +652,7 @@
             <div class="real-metric"><small>Yön tahmini</small><strong id="realAngle">—</strong></div>
             <div class="real-metric"><small>Etkin pencere</small><strong id="realFrames">—</strong></div>
             <div class="real-metric"><small>Açı yayılımı</small><strong id="realSpread">—</strong></div>
+            <div class="real-metric"><small>Referans açı hatası</small><strong id="realCalError">—</strong></div>
           </div>
           <ul class="real-pairs" id="realPairs" aria-label="Mikrofon çifti gecikmeleri"><li>01–02 · —</li><li>01–03 · —</li><li>01–04 · —</li><li>02–03 · —</li><li>02–04 · —</li><li>03–04 · —</li></ul>
         </div>
@@ -1137,11 +1157,12 @@
         btn.textContent="Açı taramasını yeniden çalıştır";
       }
       let realStream=null,realAudioContext=null,realSource=null,realSplitter=null,realProcessor=null,realChunks=null,realTimer=0,realCaptureRate=FS,realCaptureFailed=false;
+      let realCalibrationConfig={spacing:.70,referenceAngle:null,sourceDistance:null};
       function setRealStatus(message,kind="") {
         const el=$("realStatus"); el.textContent=message; el.dataset.kind=kind;
       }
       function clearRealMetrics() {
-        $("realAngle").textContent="—"; $("realFrames").textContent="—"; $("realSpread").textContent="—";
+        $("realAngle").textContent="—"; $("realFrames").textContent="—"; $("realSpread").textContent="—"; $("realCalError").textContent="—";
         $("realPairs").innerHTML=pairs.map(([a,b])=>`<li>${String(a+1).padStart(2,"0")}–${String(b+1).padStart(2,"0")} · —</li>`).join("");
       }
       async function findRealDevices() {
@@ -1188,7 +1209,7 @@
         const channelRms=channels.slice(0,4).map(ch=>Math.sqrt(ch.reduce((sum,x)=>sum+x*x,0)/Math.max(1,ch.length)));
         if(channelRms.some(rms=>rms<Math.max(0.000001,Math.max(...channelRms)*0.001))) { setRealStatus("Dört kanalın hepsinde kullanılabilir ses yok. Ses kartı girişlerini, mikrofon bağlantılarını ve kanal sırasını kontrol edin.","error"); clearRealMetrics(); return; }
         const active=windows.filter(w=>w.rms>=Math.max(0.00001,peakRms*.28)).sort((a,b)=>b.rms-a.rms).slice(0,48);
-        const spacing=Number(controls.spacing.value)/100,pos=positions(spacing);
+        const spacing=realCalibrationConfig.spacing,pos=positions(spacing);
         const estimates=active.map(w=>({...estimateDetails(w.segments,pos,sampleRate,spacing),rms:w.rms}));
         const sx=estimates.reduce((sum,e)=>sum+Math.cos(e.angle*Math.PI/180),0), sy=estimates.reduce((sum,e)=>sum+Math.sin(e.angle*Math.PI/180),0);
         const mean=Math.atan2(sy,sx)*180/Math.PI, resultant=Math.hypot(sx,sy)/estimates.length;
@@ -1197,6 +1218,17 @@
         $("realAngle").textContent=`${mean>0?"+":""}${mean.toFixed(1)}°`;
         $("realFrames").textContent=String(estimates.length);
         $("realSpread").textContent=`${spread.toFixed(1)}°`;
+        const referenceAngle=realCalibrationConfig.referenceAngle;
+        const sourceDistance=realCalibrationConfig.sourceDistance;
+        if(Number.isFinite(referenceAngle)) {
+          const error=circularError(mean,referenceAngle);
+          $("realCalError").textContent=`${Math.abs(error).toFixed(1)}°`;
+          const distanceNote=Number.isFinite(sourceDistance)?` · hoparlör uzaklığı ${sourceDistance.toLocaleString("tr-TR")} m (not)`:"";
+          $("realCalibrationStatus").textContent=`Referans ${referenceAngle>0?"+":""}${referenceAngle}° · tahmin ${mean>0?"+":""}${mean.toFixed(1)}° · fark ${error>0?"+":""}${error.toFixed(1)}° · kare kenarı ${$("realMicSpacing").value} cm${distanceNote}. Bu fark kalibrasyon kontrolüdür; tek başına düzeltme uygulanmaz.`;
+        } else {
+          $("realCalError").textContent="—";
+          $("realCalibrationStatus").textContent=`Kare mikrofon dizisi kenar uzunluğu ${$("realMicSpacing").value} cm olarak kullanıldı. Bilinen bir hoparlör açısı girerseniz ölçümden sonra hata hesaplanır; uzaklık alanı deney notudur, bu algoritma menzil hesaplamaz.`;
+        }
         $("realPairs").innerHTML=strongest.lags.map((lag,i)=>`<li>${String(pairs[i][0]+1).padStart(2,"0")}–${String(pairs[i][1]+1).padStart(2,"0")} · ${lag} örn</li>`).join("");
         if(resultant<.35) setRealStatus(`${sourceLabel}: dört kanal analiz edildi, ancak pencereler farklı yönlere işaret ediyor (kararlılık düşük). Daha temiz/kısa bir kaynak sesiyle tekrar deneyin.`,"error");
         else setRealStatus(`${sourceLabel}: ${sampleRate.toLocaleString("tr-TR")} Hz · ${estimates.length} etkin pencere · GCC‑PHAT yön tahmini. Açı yayılımı ölçüm kararlılığıdır; saha doğruluğu değildir.`,"success");
@@ -1278,6 +1310,16 @@
       $("realStart").addEventListener("click",startRealRecording);
       $("realStop").addEventListener("click",stopAndAnalyzeRealRecording);
       $("realWav").addEventListener("change",loadRealWav);
+      $("realApplyGeometry").addEventListener("click",()=>{
+        const spacing=Number($("realMicSpacing").value),angleText=$("realRefAngle").value.trim(),angle=angleText===""?NaN:Number(angleText),distanceText=$("realSourceDistance").value.trim(),distance=distanceText===""?NaN:Number(distanceText);
+        if(!Number.isFinite(spacing)||spacing<5||spacing>300) { $("realCalibrationStatus").textContent="Mikrofon kenar aralığını 5–300 cm arasında girin."; $("realMicSpacing").focus(); return; }
+        if(angleText!==""&&(!Number.isFinite(angle)||angle< -180||angle>180)) { $("realCalibrationStatus").textContent="Referans açıyı −180° ile +180° arasında girin."; $("realRefAngle").focus(); return; }
+        if(distanceText!==""&&(!Number.isFinite(distance)||distance<.2||distance>100)) { $("realCalibrationStatus").textContent="Hoparlör uzaklığını 0,2–100 m arasında girin."; $("realSourceDistance").focus(); return; }
+        const angleNote=Number.isFinite(angle)?` · referans yön ${angle>0?"+":""}${angle}°`:" · referans açı girilmedi";
+        const distanceNote=Number.isFinite(distance)?` · kaynak uzaklığı ${distance.toLocaleString("tr-TR")} m (deney notu)`:"";
+        realCalibrationConfig={spacing:spacing/100,referenceAngle:Number.isFinite(angle)?angle:null,sourceDistance:Number.isFinite(distance)?distance:null};
+        $("realCalibrationStatus").textContent=`Ölçüm ayarlandı · kare kenarı ${spacing} cm${angleNote}${distanceNote}. Bu geometri gerçek kayıt analizinde kullanılacak.`;
+      });
       $("compareButton").addEventListener("click",playComparisonAnimation);
       const animatedSections=[document.querySelector(".visual-panel"),document.querySelector(".mapper-map-wrap"),$("compareWrap")];
       if("IntersectionObserver" in window) {
