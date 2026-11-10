@@ -365,8 +365,18 @@
     .real-pairs { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; margin:10px 0 0; padding:0; list-style:none; }
     .real-pairs li { padding:7px 6px; border-radius:7px; background:#f3f6f0; color:#64796c; font-size:9px; text-align:center; font-variant-numeric:tabular-nums; }
     .real-footnote { margin:12px 1px 0; color:#78877e; font-size:10px; line-height:1.55; }
+    .real-workflow { margin-top:17px; padding:17px; border:1px solid #d6e3d6; border-radius:15px; background:rgba(255,255,252,.74); }
+    .real-workflow-head { margin-bottom:12px; }
+    .real-workflow-head h3 { margin:0; color:#284c3d; font-size:15px; }
+    .real-workflow-head p { margin:5px 0 0; color:#718278; font-size:11px; line-height:1.55; }
+    .real-steps { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; margin:0; padding:0; list-style:none; counter-reset:realstep; }
+    .real-steps li { position:relative; min-width:0; padding:12px 12px 12px 43px; border:1px solid #e0e9de; border-radius:11px; background:#fbfcf8; counter-increment:realstep; }
+    .real-steps li::before { content:counter(realstep,decimal-leading-zero); position:absolute; left:11px; top:11px; display:grid; place-items:center; width:23px; height:23px; border-radius:7px; background:#e4efe3; color:#34735b; font-size:9px; font-weight:850; }
+    .real-steps strong { display:block; margin-bottom:4px; color:#315443; font-size:11px; }
+    .real-steps p { margin:0; color:#6c7e72; font-size:10px; line-height:1.55; }
+    .real-workflow-note { margin:10px 0 0; padding:10px 11px; border-left:3px solid #8bb99a; border-radius:0 8px 8px 0; background:#eef5ec; color:#617669; font-size:10px; line-height:1.55; }
     @media (max-width:760px) { .real-grid { grid-template-columns:minmax(0,1fr); } .real-head { display:block; } .real-badge { display:inline-block; margin-top:10px; } }
-    @media (max-width:520px) { .real-section { padding:16px 12px; border-radius:17px; } .real-card { padding:14px; } .real-metrics { gap:6px; } .real-metric { padding:8px 6px; } .real-metric strong { font-size:15px; } .real-actions .run { flex:1; min-width:120px; } }
+    @media (max-width:520px) { .real-section { padding:16px 12px; border-radius:17px; } .real-card { padding:14px; } .real-metrics { gap:6px; } .real-metric { padding:8px 6px; } .real-metric strong { font-size:15px; } .real-actions .run { flex:1; min-width:120px; } .real-steps { grid-template-columns:minmax(0,1fr); } .real-workflow { padding:13px; } }
   </style>
 </head>
 <body>
@@ -496,37 +506,6 @@
       </main>
     </div>
 
-    <section class="real-section" aria-labelledby="realTitle">
-      <div class="real-head">
-        <div><p class="panel-kicker">Deneysel mod · gerçek ses verisi</p><h2 id="realTitle">Dört kanallı kayıtla yön kestirimi</h2><p>Ses kartını seçip tarayıcıdan kayıt alın veya dört mikrofonla eşzamanlı kaydedilmiş WAV dosyası yükleyin. GCC‑PHAT, gerçek kanallar arasındaki gecikmeleri hesaplar; analiz bu tarayıcıda yapılır.</p></div>
-        <span class="real-badge">SENTETİK DEĞİL · HAM KAYIT</span>
-      </div>
-      <div class="real-grid">
-        <div class="real-card">
-          <h3>Canlı mikrofon kaydı</h3>
-          <p>“Girişleri bul” ile izin verin ve 4 girişli ses kartınızın kanal sayısının tarayıcıda gerçekten dört göründüğünü kontrol edin.</p>
-          <label class="select-label" for="realDevice">Ses giriş aygıtı</label>
-          <select id="realDevice" class="real-select" aria-label="Gerçek kayıt için ses giriş aygıtı"><option value="">Önce girişleri bulun</option></select>
-          <div class="control-top" style="margin:12px 0 0"><label for="realDuration">Kayıt süresi</label><select id="realDuration" class="real-select" style="width:auto;min-width:115px;margin:0"><option value="2">2 saniye</option><option value="4" selected>4 saniye</option><option value="6">6 saniye</option></select></div>
-          <div class="real-actions"><button class="run secondary" id="realListDevices" type="button">Girişleri bul</button><button class="run" id="realStart" type="button">Kaydı başlat</button><button class="run secondary" id="realStop" type="button" disabled>Kaydı durdur</button></div>
-          <p class="real-status" id="realStatus" role="status" aria-live="polite">Hazır · dört eşzamanlı giriş gerekir. Tarayıcı tek/iki kanal verirse kayıt analiz edilmez.</p>
-        </div>
-        <div class="real-card">
-          <h3>Çok kanallı WAV yükle</h3>
-          <p>Ses kartı yazılımından 4 kanalın aynı anda kaydedildiği PCM WAV dosyasını seçin. 1–2 kanallı dosyadan dört mikrofon yönü hesaplanamaz.</p>
-          <label class="select-label" for="realWav">WAV dosyası</label>
-          <input id="realWav" class="real-file" type="file" accept=".wav,audio/wav,audio/x-wav">
-          <div class="real-metrics" aria-live="polite">
-            <div class="real-metric"><small>Yön tahmini</small><strong id="realAngle">—</strong></div>
-            <div class="real-metric"><small>Etkin pencere</small><strong id="realFrames">—</strong></div>
-            <div class="real-metric"><small>Açı yayılımı</small><strong id="realSpread">—</strong></div>
-          </div>
-          <ul class="real-pairs" id="realPairs" aria-label="Mikrofon çifti gecikmeleri"><li>01–02 · —</li><li>01–03 · —</li><li>01–04 · —</li><li>02–03 · —</li><li>02–04 · —</li><li>03–04 · —</li></ul>
-        </div>
-      </div>
-      <p class="real-footnote"><strong>Sınırlar:</strong> Canlı mod yalnızca tarayıcı dört kanalı ayrı ve eşzamanlı sunarsa çalışır; bazı tarayıcılar girişleri stereo olarak birleştirebilir. Açı hesabında mevcut mikrofon aralığı ve kare dizilim varsayılır: M1 sol-üst, M2 sol-alt, M3 sağ-üst, M4 sağ-alt. Bu ilk kayıt modu yön kestirir; tek başına gerçek ağaç konumu/haritası üretmez. Harita için verici-alıcı geometrisi, zaman referansı ve saha kalibrasyonu ayrıca gerekir.</p>
-    </section>
-
     <section class="mapper-section" aria-labelledby="mapperTitle">
       <div class="mapper-intro">
         <div>
@@ -628,6 +607,49 @@
         </div>
       </section>
       <p class="mapper-note"><strong>Model sınırı:</strong> Bu, bilinen konumdaki tek bir verici/alıcı dizisinden gövde yankılarını kullanarak yapılan sentetik ve 2B bir taslaktır. Ağaç örtüsü/zemin yankıları gerçek ölçüm değildir. Daha geniş alan haritası için diziyi farklı noktalara taşıyıp konumları (GPS/ölçüm) birleştirmek; gerçek sinyali eşzamanlı kaydedip kalibre etmek gerekir.</p>
+    </section>
+
+    <section class="real-section" aria-labelledby="realTitle">
+      <div class="real-head">
+        <div><p class="panel-kicker">Deneysel mod · gerçek ses verisi</p><h2 id="realTitle">Dört kanallı kayıtla yön kestirimi</h2><p>Ses kartını seçip tarayıcıdan kayıt alın veya dört mikrofonla eşzamanlı kaydedilmiş WAV dosyası yükleyin. GCC‑PHAT, gerçek kanallar arasındaki gecikmeleri hesaplar; analiz bu tarayıcıda yapılır.</p></div>
+        <span class="real-badge">SENTETİK DEĞİL · HAM KAYIT</span>
+      </div>
+      <div class="real-grid">
+        <div class="real-card">
+          <h3>Canlı mikrofon kaydı</h3>
+          <p>“Girişleri bul” ile izin verin ve 4 girişli ses kartınızın kanal sayısının tarayıcıda gerçekten dört göründüğünü kontrol edin.</p>
+          <label class="select-label" for="realDevice">Ses giriş aygıtı</label>
+          <select id="realDevice" class="real-select" aria-label="Gerçek kayıt için ses giriş aygıtı"><option value="">Önce girişleri bulun</option></select>
+          <div class="control-top" style="margin:12px 0 0"><label for="realDuration">Kayıt süresi</label><select id="realDuration" class="real-select" style="width:auto;min-width:115px;margin:0"><option value="2">2 saniye</option><option value="4" selected>4 saniye</option><option value="6">6 saniye</option></select></div>
+          <div class="real-actions"><button class="run secondary" id="realListDevices" type="button">Girişleri bul</button><button class="run" id="realStart" type="button">Kaydı başlat</button><button class="run secondary" id="realStop" type="button" disabled>Kaydı durdur</button></div>
+          <p class="real-status" id="realStatus" role="status" aria-live="polite">Hazır · dört eşzamanlı giriş gerekir. Tarayıcı tek/iki kanal verirse kayıt analiz edilmez.</p>
+        </div>
+        <div class="real-card">
+          <h3>Çok kanallı WAV yükle</h3>
+          <p>Ses kartı yazılımından 4 kanalın aynı anda kaydedildiği PCM WAV dosyasını seçin. 1–2 kanallı dosyadan dört mikrofon yönü hesaplanamaz.</p>
+          <label class="select-label" for="realWav">WAV dosyası</label>
+          <input id="realWav" class="real-file" type="file" accept=".wav,audio/wav,audio/x-wav">
+          <div class="real-metrics" aria-live="polite">
+            <div class="real-metric"><small>Yön tahmini</small><strong id="realAngle">—</strong></div>
+            <div class="real-metric"><small>Etkin pencere</small><strong id="realFrames">—</strong></div>
+            <div class="real-metric"><small>Açı yayılımı</small><strong id="realSpread">—</strong></div>
+          </div>
+          <ul class="real-pairs" id="realPairs" aria-label="Mikrofon çifti gecikmeleri"><li>01–02 · —</li><li>01–03 · —</li><li>01–04 · —</li><li>02–03 · —</li><li>02–04 · —</li><li>03–04 · —</li></ul>
+        </div>
+      </div>
+      <div class="real-workflow" aria-labelledby="realWorkflowTitle">
+        <div class="real-workflow-head"><h3 id="realWorkflowTitle">Donanımı bağladıktan sonra izleyeceğimiz yol</h3><p>Önce yön kestirimini kontrollü koşullarda doğrulayacağız. Her adımda kayıt dosyasını, ayarları ve gözlemleri saklayarak sonuçları tekrarlanabilir hale getireceğiz.</p></div>
+        <ol class="real-steps">
+          <li><strong>Mikrofon dizisini kurup ölçün</strong><p>Dört mikrofonu kare düzende sabitleyin; merkezden merkeze aralığı ölçüp not edin. Kanal sırasını ve yerleşimi M1 sol-üst, M2 sol-alt, M3 sağ-üst, M4 sağ-alt olarak işaretleyin. Mikrofon tipinin besleme gereksinimini kontrol edin; emin olmadan phantom power açmayın.</p></li>
+          <li><strong>Ses kartını ve kayıt biçimini doğrulayın</strong><p>Mikrofonları UMC404HD giriş 1–4'e bağlayın ve bilgisayarda kartın dört ayrı girişi verdiğini kontrol edin. İlk denemede aynı örnekleme hızını (tercihen 44,1 veya 48 kHz), kanal sırasını ve tüm kanallarda benzer kazancı kullanın; otomatik gürültü azaltma/AGC'yi kapatın.</p></li>
+          <li><strong>Bilinen yönde referans kaydı alın</strong><p>Diziyi sabit tutup kısa ve geniş bantlı bir ses (ör. el çırpma) kaynağını ölçülmüş bir açıya yerleştirin. Sessiz ortamda 2–6 saniye kayıt alın; tarayıcı dört kanalı sunmazsa ses kartı yazılımıyla dört kanallı PCM WAV kaydedip buraya yükleyin.</p></li>
+          <li><strong>Kanalları ve ilk sonucu kontrol edin</strong><p>Giriş sayısı dört mü, kanallar eşzamanlı mı ve sinyal kesilmeden kaydolmuş mu kontrol edin. Tahmini açı, kanal çifti gecikmeleri, etkin pencere ve açı yayılımını inceleyin. Yayılım yüksekse kaydı sessiz ortamda tekrarlayın ve kazançları eşitleyin.</p></li>
+          <li><strong>Kalibrasyon denemelerini tekrarlayın</strong><p>Kaynağı örneğin −60°, −30°, 0°, +30° ve +60° yönlerine taşıyıp her açı için birkaç tekrar yapın. Gerçek açı, tahmin, mikrofon aralığı ve kayıt koşullarını tabloya yazın; ortalama mutlak açı hatası (MAE) ve tekrar tutarlılığını hesaplayın.</p></li>
+          <li><strong>Ağaç haritalamaya kontrollü geçin</strong><p>Yön bulma doğrulandıktan sonra ayrı verici/alıcı geometrisini, darbe zaman referansını ve bilinen ağaç konumlarını belirleyin. Yankıların doğrudan sesten ayrılmasını ve menzil hesabını önce tek hedefle sınayın; gerçek haritayı ancak saha ölçümü ve kalibrasyondan sonra üretin.</p></li>
+        </ol>
+        <p class="real-workflow-note"><strong>Bu modun şu anki kapsamı:</strong> Gerçek, eşzamanlı dört kanallı ses kaydından geliş açısı kestirir. Bu ekrandaki ağaç haritalama bölümü ayrı bir sentetik senaryodur; gerçek kaydı yüklemek henüz gerçek ağaç konumlarını bulmaz. Haritalama için verici-alıcı düzeni, bilinen zaman referansı, yankı ayrıştırma ve saha doğrulaması ayrıca geliştirilmelidir.</p>
+      </div>
+      <p class="real-footnote"><strong>Önemli varsayım:</strong> Açı hesabı kayıt kanallarının belirtilen fiziksel mikrofon konumlarına karşılık geldiğini ve mevcut mikrofon aralığını kullanır. Kablo/kanal sırası ya da dizi yönü değişirse sonuç dönebilir veya aynalanabilir; önce bilinen açıyla kalibrasyon yapın.</p>
     </section>
 
     <footer class="footer">
