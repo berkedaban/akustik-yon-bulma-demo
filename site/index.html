@@ -340,6 +340,33 @@
     .compare-button:hover { background:#eaf3e9; border-color:#97bba0; }
     .footer { color:#6c8174; }
     .footer strong { color:#456653; }
+    .real-section { margin:24px 0 4px; padding:clamp(18px,2.6vw,30px); border:1px solid #cfdfd2; border-radius:22px; background:linear-gradient(135deg,#f8fbf6,#eaf3e9); box-shadow:0 14px 36px rgba(27,58,44,.06); }
+    .real-head { display:flex; justify-content:space-between; align-items:flex-start; gap:18px; margin-bottom:18px; }
+    .real-head h2 { margin:0; color:#17382f; font-size:clamp(19px,2.3vw,25px); letter-spacing:-.03em; }
+    .real-head p:not(.panel-kicker) { max-width:740px; margin:7px 0 0; color:#61776c; font-size:12px; line-height:1.65; }
+    .real-badge { flex:none; padding:7px 10px; border:1px solid #b9d4c2; border-radius:999px; background:#e2f1e8; color:#216a54; font-size:9px; font-weight:800; letter-spacing:.1em; }
+    .real-grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(235px,.72fr); gap:14px; }
+    .real-card { min-width:0; padding:17px; border:1px solid #d6e3d6; border-radius:15px; background:rgba(255,255,252,.9); }
+    .real-card h3 { margin:0 0 6px; color:#284c3d; font-size:14px; }
+    .real-card > p { margin:0 0 13px; color:#718278; font-size:11px; line-height:1.55; }
+    .real-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:11px; }
+    .real-actions .run { width:auto; min-width:145px; min-height:40px; padding:0 13px; font-size:12px; }
+    .real-actions .run.secondary { border:1px solid #bfd5c4; background:#eef5ed; color:#25624f; }
+    .real-actions .run.secondary:hover { background:#e4f0e4; }
+    .real-select,.real-file { width:100%; min-height:40px; margin-top:6px; border:1px solid #ccdbce; border-radius:9px; padding:7px 10px; color:#294b3d; background:#fff; font:inherit; font-size:12px; }
+    .real-file { min-height:auto; padding:8px; }
+    .real-status { min-height:38px; margin:12px 0 0; padding:9px 11px; border-radius:9px; background:#edf4eb; color:#526d5c; font-size:11px; line-height:1.5; }
+    .real-status[data-kind="error"] { background:#fbefea; color:#92533c; }
+    .real-status[data-kind="success"] { background:#e7f4ec; color:#23624e; }
+    .real-metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:11px; }
+    .real-metric { min-width:0; padding:10px; border-radius:9px; background:#eff5ed; }
+    .real-metric small { display:block; color:#6a8172; font-size:9px; font-weight:750; letter-spacing:.04em; text-transform:uppercase; }
+    .real-metric strong { display:block; margin-top:4px; color:#1b5544; font-size:18px; font-variant-numeric:tabular-nums; }
+    .real-pairs { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; margin:10px 0 0; padding:0; list-style:none; }
+    .real-pairs li { padding:7px 6px; border-radius:7px; background:#f3f6f0; color:#64796c; font-size:9px; text-align:center; font-variant-numeric:tabular-nums; }
+    .real-footnote { margin:12px 1px 0; color:#78877e; font-size:10px; line-height:1.55; }
+    @media (max-width:760px) { .real-grid { grid-template-columns:minmax(0,1fr); } .real-head { display:block; } .real-badge { display:inline-block; margin-top:10px; } }
+    @media (max-width:520px) { .real-section { padding:16px 12px; border-radius:17px; } .real-card { padding:14px; } .real-metrics { gap:6px; } .real-metric { padding:8px 6px; } .real-metric strong { font-size:15px; } .real-actions .run { flex:1; min-width:120px; } }
   </style>
 </head>
 <body>
@@ -468,6 +495,37 @@
         </section>
       </main>
     </div>
+
+    <section class="real-section" aria-labelledby="realTitle">
+      <div class="real-head">
+        <div><p class="panel-kicker">Deneysel mod · gerçek ses verisi</p><h2 id="realTitle">Dört kanallı kayıtla yön kestirimi</h2><p>Ses kartını seçip tarayıcıdan kayıt alın veya dört mikrofonla eşzamanlı kaydedilmiş WAV dosyası yükleyin. GCC‑PHAT, gerçek kanallar arasındaki gecikmeleri hesaplar; analiz bu tarayıcıda yapılır.</p></div>
+        <span class="real-badge">SENTETİK DEĞİL · HAM KAYIT</span>
+      </div>
+      <div class="real-grid">
+        <div class="real-card">
+          <h3>Canlı mikrofon kaydı</h3>
+          <p>“Girişleri bul” ile izin verin ve 4 girişli ses kartınızın kanal sayısının tarayıcıda gerçekten dört göründüğünü kontrol edin.</p>
+          <label class="select-label" for="realDevice">Ses giriş aygıtı</label>
+          <select id="realDevice" class="real-select" aria-label="Gerçek kayıt için ses giriş aygıtı"><option value="">Önce girişleri bulun</option></select>
+          <div class="control-top" style="margin:12px 0 0"><label for="realDuration">Kayıt süresi</label><select id="realDuration" class="real-select" style="width:auto;min-width:115px;margin:0"><option value="2">2 saniye</option><option value="4" selected>4 saniye</option><option value="6">6 saniye</option></select></div>
+          <div class="real-actions"><button class="run secondary" id="realListDevices" type="button">Girişleri bul</button><button class="run" id="realStart" type="button">Kaydı başlat</button><button class="run secondary" id="realStop" type="button" disabled>Kaydı durdur</button></div>
+          <p class="real-status" id="realStatus" role="status" aria-live="polite">Hazır · dört eşzamanlı giriş gerekir. Tarayıcı tek/iki kanal verirse kayıt analiz edilmez.</p>
+        </div>
+        <div class="real-card">
+          <h3>Çok kanallı WAV yükle</h3>
+          <p>Ses kartı yazılımından 4 kanalın aynı anda kaydedildiği PCM WAV dosyasını seçin. 1–2 kanallı dosyadan dört mikrofon yönü hesaplanamaz.</p>
+          <label class="select-label" for="realWav">WAV dosyası</label>
+          <input id="realWav" class="real-file" type="file" accept=".wav,audio/wav,audio/x-wav">
+          <div class="real-metrics" aria-live="polite">
+            <div class="real-metric"><small>Yön tahmini</small><strong id="realAngle">—</strong></div>
+            <div class="real-metric"><small>Etkin pencere</small><strong id="realFrames">—</strong></div>
+            <div class="real-metric"><small>Açı yayılımı</small><strong id="realSpread">—</strong></div>
+          </div>
+          <ul class="real-pairs" id="realPairs" aria-label="Mikrofon çifti gecikmeleri"><li>01–02 · —</li><li>01–03 · —</li><li>01–04 · —</li><li>02–03 · —</li><li>02–04 · —</li><li>03–04 · —</li></ul>
+        </div>
+      </div>
+      <p class="real-footnote"><strong>Sınırlar:</strong> Canlı mod yalnızca tarayıcı dört kanalı ayrı ve eşzamanlı sunarsa çalışır; bazı tarayıcılar girişleri stereo olarak birleştirebilir. Açı hesabında mevcut mikrofon aralığı ve kare dizilim varsayılır: M1 sol-üst, M2 sol-alt, M3 sağ-üst, M4 sağ-alt. Bu ilk kayıt modu yön kestirir; tek başına gerçek ağaç konumu/haritası üretmez. Harita için verici-alıcı geometrisi, zaman referansı ve saha kalibrasyonu ayrıca gerekir.</p>
+    </section>
 
     <section class="mapper-section" aria-labelledby="mapperTitle">
       <div class="mapper-intro">
@@ -619,9 +677,9 @@
         const h = side / 2;
         return [[-h,-h],[-h,h],[h,-h],[h,h]];
       }
-      function delaysSamples(angleDeg, pos) {
+      function delaysSamples(angleDeg, pos, sampleRate = FS) {
         const a = angleDeg * Math.PI / 180;
-        return pos.map(([x,y]) => -(x * Math.cos(a) + y * Math.sin(a)) / C * FS);
+        return pos.map(([x,y]) => -(x * Math.cos(a) + y * Math.sin(a)) / C * sampleRate);
       }
       function synthesize(angle, side, snrDb, echoLevel) {
         const pos = positions(side);
@@ -674,11 +732,12 @@
         if (inverse) for (let i = 0; i < n; i++) { re[i] /= n; im[i] /= n; }
       }
       function gccPhatLag(a, b, maxLag) {
-        const ar = Float64Array.from(a), ai = new Float64Array(FRAME);
-        const br = Float64Array.from(b), bi = new Float64Array(FRAME);
+        const n = a.length;
+        const ar = Float64Array.from(a), ai = new Float64Array(n);
+        const br = Float64Array.from(b), bi = new Float64Array(n);
         fft(ar, ai, false); fft(br, bi, false);
-        const cr = new Float64Array(FRAME), ci = new Float64Array(FRAME);
-        for (let k = 0; k < FRAME; k++) {
+        const cr = new Float64Array(n), ci = new Float64Array(n);
+        for (let k = 0; k < n; k++) {
           let real = ar[k] * br[k] + ai[k] * bi[k];
           let imag = ai[k] * br[k] - ar[k] * bi[k];
           const mag = Math.hypot(real, imag) || 1e-12;
@@ -687,19 +746,19 @@
         fft(cr, ci, true);
         let bestLag = 0, best = -Infinity;
         for (let lag = -maxLag; lag <= maxLag; lag++) {
-          const i = lag < 0 ? FRAME + lag : lag;
+          const i = lag < 0 ? n + lag : lag;
           const value = Math.hypot(cr[i], ci[i]);
           if (value > best) { best = value; bestLag = lag; }
         }
         return bestLag;
       }
-      function estimate(channels, pos) {
-        const diagonal = Math.SQRT2 * Number(controls.spacing.value) / 100;
-        const maxLag = Math.ceil(diagonal / C * FS) + 5;
+      function estimateDetails(channels, pos, sampleRate = FS, spacing = Number(controls.spacing.value) / 100) {
+        const diagonal = Math.SQRT2 * spacing;
+        const maxLag = Math.ceil(diagonal / C * sampleRate) + 5;
         const observed = pairs.map(([i,j]) => gccPhatLag(channels[i], channels[j], maxLag));
         let bestAngle = -180, bestScore = Infinity;
         for (let deg = -180; deg < 180; deg += 0.25) {
-          const d = delaysSamples(deg, pos);
+          const d = delaysSamples(deg, pos, sampleRate);
           let score = 0;
           for (let p = 0; p < pairs.length; p++) {
             const [i,j] = pairs[p];
@@ -708,7 +767,10 @@
           }
           if (score < bestScore) { bestScore = score; bestAngle = deg; }
         }
-        return bestAngle;
+        return { angle:bestAngle, score:bestScore, lags:observed };
+      }
+      function estimate(channels, pos) {
+        return estimateDetails(channels,pos).angle;
       }
       function circularError(a, b) {
         let d = (a - b + 180) % 360;
@@ -1052,6 +1114,125 @@
         progressBar.style.width = "100%";
         btn.textContent="Açı taramasını yeniden çalıştır";
       }
+      let realStream=null,realAudioContext=null,realSource=null,realSplitter=null,realProcessor=null,realChunks=null,realTimer=0,realCaptureRate=FS,realCaptureFailed=false;
+      function setRealStatus(message,kind="") {
+        const el=$("realStatus"); el.textContent=message; el.dataset.kind=kind;
+      }
+      function clearRealMetrics() {
+        $("realAngle").textContent="—"; $("realFrames").textContent="—"; $("realSpread").textContent="—";
+        $("realPairs").innerHTML=pairs.map(([a,b])=>`<li>${String(a+1).padStart(2,"0")}–${String(b+1).padStart(2,"0")} · —</li>`).join("");
+      }
+      async function findRealDevices() {
+        if(!navigator.mediaDevices?.getUserMedia) { setRealStatus("Bu tarayıcı mikrofon erişimini desteklemiyor. Dört kanallı WAV yükleyebilirsiniz.","error"); return; }
+        let permissionStream;
+        try {
+          permissionStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false},video:false});
+          permissionStream.getTracks().forEach(t=>t.stop());
+          const devices=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==="audioinput"), select=$("realDevice"), old=select.value;
+          select.innerHTML="";
+          if(!devices.length) { select.add(new Option("Ses girişi bulunamadı","")); setRealStatus("Mikrofon girişi bulunamadı. Ses kartının sürücüsünü ve Windows giriş aygıtlarını kontrol edin.","error"); return; }
+          devices.forEach((d,i)=>select.add(new Option(d.label||`Ses girişi ${i+1}`,d.deviceId)));
+          if(devices.some(d=>d.deviceId===old)) select.value=old;
+          setRealStatus(`${devices.length} ses girişi bulundu. Dört kanallı arayüzü seçip kayıt başlatın. İzin yalnızca bu tarayıcı sekmesinde kullanılır.`,`success`);
+        } catch(err) {
+          permissionStream?.getTracks().forEach(t=>t.stop());
+          setRealStatus(err.name==="NotAllowedError"?"Mikrofon izni verilmedi. İsterseniz WAV yükleme yöntemini kullanabilirsiniz.":`Girişler listelenemedi: ${err.message||err}`,"error");
+        }
+      }
+      function stopRealTracks() {
+        clearTimeout(realTimer); realTimer=0;
+        if(realProcessor) { realProcessor.onaudioprocess=null; try{realProcessor.disconnect();}catch{} }
+        try{realSplitter?.disconnect();realSource?.disconnect();}catch{}
+        realStream?.getTracks().forEach(t=>t.stop());
+        realStream=null; realProcessor=null; realSplitter=null; realSource=null;
+        const ctx=realAudioContext; realAudioContext=null;
+        if(ctx&&ctx.state!=="closed") ctx.close().catch(()=>{});
+        $("realStart").disabled=false; $("realStop").disabled=true;
+      }
+      function analyzeRealChannels(channels,sampleRate,sourceLabel) {
+        if(channels.length<4) { setRealStatus(`Bu kayıt ${channels.length} kanal içeriyor. Yön kestirimi için dört ayrı ve eşzamanlı mikrofon kanalı gerekir.`,"error"); return; }
+        const length=Math.min(...channels.slice(0,4).map(x=>x.length));
+        if(length<FRAME) { setRealStatus("Kayıt çok kısa. En az 0,1 saniyelik dört kanallı ses seçin.","error"); return; }
+        const windows=[];
+        for(let start=0;start+FRAME<=length;start+=FRAME/2) {
+          const segments=channels.slice(0,4).map(ch=>ch.subarray(start,start+FRAME));
+          let energy=0;
+          for(const segment of segments) for(let i=0;i<segment.length;i++) energy+=segment[i]*segment[i];
+          const rms=Math.sqrt(energy/(FRAME*4));
+          windows.push({start,segments,rms});
+        }
+        const peakRms=Math.max(...windows.map(w=>w.rms));
+        if(!Number.isFinite(peakRms)||peakRms<0.00001) { setRealStatus("Kayıtta kullanılabilir ses seviyesi bulunamadı. Mikrofon bağlantısını ve giriş kazancını kontrol edip yeniden deneyin.","error"); clearRealMetrics(); return; }
+        const channelRms=channels.slice(0,4).map(ch=>Math.sqrt(ch.reduce((sum,x)=>sum+x*x,0)/Math.max(1,ch.length)));
+        if(channelRms.some(rms=>rms<Math.max(0.000001,Math.max(...channelRms)*0.001))) { setRealStatus("Dört kanalın hepsinde kullanılabilir ses yok. Ses kartı girişlerini, mikrofon bağlantılarını ve kanal sırasını kontrol edin.","error"); clearRealMetrics(); return; }
+        const active=windows.filter(w=>w.rms>=Math.max(0.00001,peakRms*.28)).sort((a,b)=>b.rms-a.rms).slice(0,48);
+        const spacing=Number(controls.spacing.value)/100,pos=positions(spacing);
+        const estimates=active.map(w=>({...estimateDetails(w.segments,pos,sampleRate,spacing),rms:w.rms}));
+        const sx=estimates.reduce((sum,e)=>sum+Math.cos(e.angle*Math.PI/180),0), sy=estimates.reduce((sum,e)=>sum+Math.sin(e.angle*Math.PI/180),0);
+        const mean=Math.atan2(sy,sx)*180/Math.PI, resultant=Math.hypot(sx,sy)/estimates.length;
+        const spread=Math.sqrt(estimates.reduce((sum,e)=>sum+Math.pow(circularError(e.angle,mean),2),0)/estimates.length);
+        const strongest=estimates[0];
+        $("realAngle").textContent=`${mean>0?"+":""}${mean.toFixed(1)}°`;
+        $("realFrames").textContent=String(estimates.length);
+        $("realSpread").textContent=`${spread.toFixed(1)}°`;
+        $("realPairs").innerHTML=strongest.lags.map((lag,i)=>`<li>${String(pairs[i][0]+1).padStart(2,"0")}–${String(pairs[i][1]+1).padStart(2,"0")} · ${lag} örn</li>`).join("");
+        if(resultant<.35) setRealStatus(`${sourceLabel}: dört kanal analiz edildi, ancak pencereler farklı yönlere işaret ediyor (kararlılık düşük). Daha temiz/kısa bir kaynak sesiyle tekrar deneyin.`,"error");
+        else setRealStatus(`${sourceLabel}: ${sampleRate.toLocaleString("tr-TR")} Hz · ${estimates.length} etkin pencere · GCC‑PHAT yön tahmini. Açı yayılımı ölçüm kararlılığıdır; saha doğruluğu değildir.`,"success");
+      }
+      async function startRealRecording() {
+        if(!navigator.mediaDevices?.getUserMedia) { setRealStatus("Canlı kayıt bu tarayıcıda kullanılamıyor. Dört kanallı WAV yükleyin.","error"); return; }
+        $("realStart").disabled=true; $("realStop").disabled=false; clearRealMetrics();
+        try {
+          const deviceId=$("realDevice").value;
+          const audio={channelCount:{ideal:4},echoCancellation:false,noiseSuppression:false,autoGainControl:false};
+          if(deviceId) audio.deviceId={exact:deviceId};
+          realStream=await navigator.mediaDevices.getUserMedia({audio,video:false});
+          const track=realStream.getAudioTracks()[0],settings=track.getSettings(),reportedChannels=Number(settings.channelCount||0);
+          if(reportedChannels>0&&reportedChannels<4) {
+            stopRealTracks(); setRealStatus(`Tarayıcı bu girişten ${reportedChannels} kanal bildiriyor; dört mikrofonun ayrı kayıt edildiği doğrulanamadı. Arayüzü seçin veya 4 kanal WAV yükleyin.`,"error"); return;
+          }
+          const Ctx=window.AudioContext||window.webkitAudioContext;
+          if(!Ctx) throw new Error("Web Audio API desteklenmiyor.");
+          realAudioContext=new Ctx({sampleRate:FS}); await realAudioContext.resume(); realCaptureRate=realAudioContext.sampleRate;
+          realSource=realAudioContext.createMediaStreamSource(realStream); realSplitter=realAudioContext.createChannelSplitter(4); realProcessor=realAudioContext.createScriptProcessor(FRAME,4,4); realChunks=[[],[],[],[]]; realCaptureFailed=false;
+          realSource.connect(realSplitter);
+          for(let ch=0;ch<4;ch++) realSplitter.connect(realProcessor,ch,ch);
+          realProcessor.onaudioprocess=e=>{
+            for(let ch=0;ch<4;ch++) {
+              const input=e.inputBuffer.getChannelData(ch), copy=new Float32Array(input.length); copy.set(input); realChunks[ch].push(copy);
+              const output=e.outputBuffer.getChannelData(ch); output.fill(0);
+            }
+          };
+          realProcessor.connect(realAudioContext.destination);
+          const seconds=Number($("realDuration").value);
+          setRealStatus(`Kayıt alınıyor · ${reportedChannels||"kanal sayısı kontrol ediliyor"} · ${seconds} saniye. Ses kaynağını mikrofon dizisine doğru çalın.`);
+          realTimer=window.setTimeout(()=>stopAndAnalyzeRealRecording(),seconds*1000);
+        } catch(err) {
+          stopRealTracks();
+          setRealStatus(err.name==="NotAllowedError"?"Mikrofon izni verilmedi.":`Gerçek kayıt başlatılamadı: ${err.message||err}. Dört kanallı WAV yükleme seçeneğini deneyin.`,"error");
+        }
+      }
+      async function stopAndAnalyzeRealRecording() {
+        if(!realChunks) return;
+        const chunks=realChunks,rate=realCaptureRate; realChunks=null;
+        stopRealTracks();
+        const lengths=chunks.map(parts=>parts.reduce((sum,x)=>sum+x.length,0));
+        const channels=chunks.map((parts,ch)=>{const merged=new Float32Array(lengths[ch]);let offset=0;for(const part of parts){merged.set(part,offset);offset+=part.length;}return merged;});
+        analyzeRealChannels(channels,rate,"Canlı kayıt");
+      }
+      async function loadRealWav(event) {
+        const file=event.target.files?.[0]; if(!file) return;
+        clearRealMetrics(); setRealStatus(`${file.name} okunuyor…`);
+        let ctx;
+        try {
+          const Ctx=window.AudioContext||window.webkitAudioContext; ctx=new Ctx({sampleRate:FS});
+          const buffer=await ctx.decodeAudioData(await file.arrayBuffer());
+          if(buffer.numberOfChannels<4) { setRealStatus(`Dosyada ${buffer.numberOfChannels} kanal var. Dört kanallı eşzamanlı WAV gerekli.`,"error"); return; }
+          const channels=Array.from({length:4},(_,i)=>Float32Array.from(buffer.getChannelData(i)));
+          analyzeRealChannels(channels,buffer.sampleRate,`WAV · ${file.name}`);
+        } catch(err) { setRealStatus(`WAV okunamadı: ${err.message||err}. PCM WAV dosyası deneyin.`,"error"); }
+        finally { if(ctx&&ctx.state!=="closed") await ctx.close().catch(()=>{}); event.target.value=""; }
+      }
       const invalidateSweep=() => {
         updateSingle();
         latestRows = [];
@@ -1071,6 +1252,10 @@
         $("mapHint").textContent="Ayarlar değişti · yeni yankı taramasını çalıştırın.";
       }));
       $("mapButton").addEventListener("click",runForestMapper);
+      $("realListDevices").addEventListener("click",findRealDevices);
+      $("realStart").addEventListener("click",startRealRecording);
+      $("realStop").addEventListener("click",stopAndAnalyzeRealRecording);
+      $("realWav").addEventListener("change",loadRealWav);
       $("compareButton").addEventListener("click",playComparisonAnimation);
       const animatedSections=[document.querySelector(".visual-panel"),document.querySelector(".mapper-map-wrap"),$("compareWrap")];
       if("IntersectionObserver" in window) {
