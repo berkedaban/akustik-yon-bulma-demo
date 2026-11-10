@@ -281,6 +281,59 @@
       *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition:none !important; }
       .metric:hover { transform:none; }
     }
+    /* Forest palette: soft canopy greens, warm paper surfaces, readable dark ink. */
+    :root {
+      --ink:#17352e;
+      --muted:#637a70;
+      --paper:#eef3ed;
+      --panel:#fbfcf8;
+      --line:#d6e1d7;
+      --teal:#176f5e;
+      --teal-soft:#e4f0e7;
+      --gold:#bd9650;
+      --shadow:0 18px 50px rgba(27,58,44,.075);
+    }
+    body { background:radial-gradient(ellipse at 8% 8%,rgba(117,157,117,.14),transparent 34rem),radial-gradient(ellipse at 92% 28%,rgba(185,202,158,.16),transparent 38rem),linear-gradient(180deg,#f0f4ef 0%,#eaf0e9 54%,#f2f4ed 100%); }
+    h1,.overview-copy h2 { color:#17382f; }
+    .brand { color:#3e5d4f; }
+    .brand-mark { background:#1b614e; }
+    .tag { border-color:#c9d9cb; color:#41634e; background:#e8f0e7; }
+    .intro-note { border-left-color:#bd9650; color:#60756a; }
+    .method-steps { border-color:#d8e3d8; background:rgba(250,252,247,.86); }
+    .method-step-num { background:#e4efe4; color:#216c58; }
+    .method-overview { border-color:#d5e1d5; background:linear-gradient(125deg,rgba(255,255,251,.98),rgba(239,246,237,.97)); box-shadow:0 14px 36px rgba(27,58,44,.055); }
+    .overview-kicker { color:#24775e; }
+    .overview-copy > p { color:#61776c; }
+    .overview-facts span { border-color:#dce7d9; color:#4d6e5b; background:#fbfcf8; }
+    .controls,.visual-panel,.chart-panel { border-color:#d6e1d7; background:rgba(252,253,249,.96); }
+    .controls:hover,.visual-panel:hover,.chart-panel:hover { border-color:#b9cebd; box-shadow:0 22px 56px rgba(27,58,44,.10); }
+    .panel-kicker { color:#668073; }
+    .control label,.select-label,.mapper-control label { color:#365548; }
+    input[type="range"],.mapper-control input[type="range"] { accent-color:#23765f; }
+    select { border-color:#cbdacb; background:#fdfefb; }
+    .run { background:#1d705a; }
+    .run:hover { background:#155b49; }
+    .scan-progress { background:#e2ebe2; }
+    .scan-progress span { background:linear-gradient(90deg,#287c5f,#9ab878); }
+    .metric { background:#edf4ec; }
+    .metric:hover { background:#e4efe4; }
+    .metric-label,.metric-sub { color:#637a6c; }
+    .metric-value { color:#1b4b3e; }
+    .mapper-section { border-color:#d3dfd3; background:linear-gradient(145deg,#fbfcf8 0%,#f1f5ee 48%,#e7efe5 100%); }
+    .mapper-copy { color:#61776c; }
+    .method-tag { border-color:#c9dac8; background:#e8f1e5; color:#3d654c; }
+    .mapper-controls { border-color:#d8e2d8; background:rgba(251,253,248,.94); }
+    .mapper-stat { background:#e9f2e8; }
+    .mapper-stat small { color:#60796a; }
+    .mapper-stat strong { color:#1a4c3e; }
+    .mapper-table-wrap { border-color:#d5e1d5; background:rgba(252,253,249,.9); }
+    .mapper-table th { background:#e8f0e6; color:#587161; }
+    .mapper-table td { border-top-color:#e3ebe1; color:#345548; }
+    .mapper-table .coord { color:#1b765e; }
+    .compare-button { border-color:#bfd4c3; color:#206b55; }
+    .compare-button:hover { background:#eaf3e9; border-color:#97bba0; }
+    .footer { color:#6c8174; }
+    .footer strong { color:#456653; }
   </style>
 </head>
 <body>
