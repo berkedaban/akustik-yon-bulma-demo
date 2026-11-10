@@ -373,6 +373,37 @@
     .real-metric strong { display:block; margin-top:4px; color:#1b5544; font-size:18px; font-variant-numeric:tabular-nums; }
     .real-pairs { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; margin:10px 0 0; padding:0; list-style:none; }
     .real-pairs li { padding:7px 6px; border-radius:7px; background:#f3f6f0; color:#64796c; font-size:9px; text-align:center; font-variant-numeric:tabular-nums; }
+    .real-result { margin-top:15px; padding:17px; border:1px solid #cfdfd2; border-radius:16px; background:linear-gradient(145deg,#f8fbf6,#edf4ec); }
+    .real-result-head { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; margin-bottom:12px; }
+    .real-result-head h3 { margin:0; color:#284c3d; font-size:15px; }
+    .real-result-head p { margin:4px 0 0; color:#718278; font-size:10px; line-height:1.5; }
+    .real-result-state { flex:none; padding:6px 9px; border:1px solid #d6e3d6; border-radius:999px; background:#fff; color:#63766a; font-size:9px; font-weight:750; }
+    .real-result-grid { display:grid; grid-template-columns:minmax(235px,.8fr) minmax(0,1.2fr); gap:12px; }
+    .real-result-card { min-width:0; padding:12px; border:1px solid #d7e3d7; border-radius:12px; background:rgba(255,255,252,.86); }
+    .real-result-card h4 { margin:0 0 3px; color:#315443; font-size:11px; }
+    .real-result-card > p { margin:0; color:#7a887d; font-size:9px; line-height:1.5; }
+    .real-compass { margin-top:8px; overflow:hidden; border:1px solid #365b4a; border-radius:10px; background:radial-gradient(circle at 50% 45%,#234638,#122d25 75%); }
+    .real-compass svg,.real-angle-chart { display:block; width:100%; height:auto; }
+    .real-compass text,.real-angle-chart text { font-family:Inter,ui-sans-serif,system-ui,sans-serif; }
+    .real-bearing-ray { stroke-dasharray:240; stroke-dashoffset:240; }
+    .real-compass.has-result .real-bearing-ray { animation:real-ray-in .9s cubic-bezier(.2,.7,.2,1) forwards; }
+    .real-bearing-point { opacity:0; transform-box:fill-box; transform-origin:center; }
+    .real-compass.has-result .real-bearing-point { animation:real-point-in .45s ease-out .55s forwards; }
+    .real-compass.has-result .real-bearing-pulse { animation:real-pulse 1.8s ease-out .65s infinite; }
+    .real-chart-line { fill:none; stroke:#17836c; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:900; stroke-dashoffset:900; }
+    .real-angle-chart.has-result .real-chart-line { animation:real-chart-in 1.1s ease-out forwards; }
+    .real-chart-point { fill:#f1c977; stroke:#fff8df; stroke-width:1.5; opacity:0; }
+    .real-angle-chart.has-result .real-chart-point { animation:real-point-in .3s ease-out forwards; animation-delay:var(--real-point-delay,0ms); }
+    .real-result-legend { display:flex; flex-wrap:wrap; gap:12px; margin-top:7px; color:#718278; font-size:9px; }
+    .real-result-legend span { display:inline-flex; align-items:center; gap:5px; }
+    .real-result-legend i { width:13px; height:3px; border-radius:3px; background:#17836c; }
+    .real-result-legend i.reference { background:#db985b; }
+    .real-result-empty { fill:#b7cabb; font-size:10px; }
+    @keyframes real-ray-in { to { stroke-dashoffset:0; } }
+    @keyframes real-chart-in { to { stroke-dashoffset:0; } }
+    @keyframes real-point-in { 0% { opacity:0; transform:scale(.3); } 75% { opacity:1; transform:scale(1.25); } 100% { opacity:1; transform:scale(1); } }
+    @keyframes real-pulse { 0% { opacity:.7; transform:scale(.45); } 100% { opacity:0; transform:scale(2.5); } }
+    @media (prefers-reduced-motion:reduce) { .real-compass.has-result .real-bearing-ray,.real-angle-chart.has-result .real-chart-line { animation:none; stroke-dashoffset:0; } .real-compass.has-result .real-bearing-point,.real-angle-chart.has-result .real-chart-point { animation:none; opacity:1; } .real-compass.has-result .real-bearing-pulse { animation:none; } }
     .real-footnote { margin:12px 1px 0; color:#78877e; font-size:10px; line-height:1.55; }
     .real-workflow { margin-top:17px; padding:17px; border:1px solid #d6e3d6; border-radius:15px; background:rgba(255,255,252,.74); }
     .real-workflow-head { margin-bottom:12px; }
@@ -384,8 +415,8 @@
     .real-steps strong { display:block; margin-bottom:4px; color:#315443; font-size:11px; }
     .real-steps p { margin:0; color:#6c7e72; font-size:10px; line-height:1.55; }
     .real-workflow-note { margin:10px 0 0; padding:10px 11px; border-left:3px solid #8bb99a; border-radius:0 8px 8px 0; background:#eef5ec; color:#617669; font-size:10px; line-height:1.55; }
-    @media (max-width:760px) { .real-grid { grid-template-columns:minmax(0,1fr); } .real-head { display:block; } .real-badge { display:inline-block; margin-top:10px; } .real-setup-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .real-setup .run { width:100%; } }
-    @media (max-width:520px) { .real-section { padding:16px 12px; border-radius:17px; } .real-card { padding:14px; } .real-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; } .real-metric { padding:8px 6px; } .real-metric strong { font-size:15px; } .real-actions .run { flex:1; min-width:120px; } .real-steps { grid-template-columns:minmax(0,1fr); } .real-workflow { padding:13px; } .real-setup { padding:13px; } .real-setup-grid { grid-template-columns:minmax(0,1fr); } }
+    @media (max-width:760px) { .real-grid { grid-template-columns:minmax(0,1fr); } .real-head { display:block; } .real-badge { display:inline-block; margin-top:10px; } .real-setup-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .real-setup .run { width:100%; } .real-result-grid { grid-template-columns:minmax(0,1fr); } }
+    @media (max-width:520px) { .real-section { padding:16px 12px; border-radius:17px; } .real-card { padding:14px; } .real-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; } .real-metric { padding:8px 6px; } .real-metric strong { font-size:15px; } .real-actions .run { flex:1; min-width:120px; } .real-steps { grid-template-columns:minmax(0,1fr); } .real-workflow { padding:13px; } .real-setup { padding:13px; } .real-setup-grid { grid-template-columns:minmax(0,1fr); } .real-result { padding:13px; } .real-result-head { display:block; } .real-result-state { display:inline-block; margin-top:8px; } }
   </style>
 </head>
 <body>
@@ -657,6 +688,41 @@
           <ul class="real-pairs" id="realPairs" aria-label="Mikrofon çifti gecikmeleri"><li>01–02 · —</li><li>01–03 · —</li><li>01–04 · —</li><li>02–03 · —</li><li>02–04 · —</li><li>03–04 · —</li></ul>
         </div>
       </div>
+      <section class="real-result" aria-labelledby="realResultTitle">
+        <div class="real-result-head">
+          <div><h3 id="realResultTitle">Gerçek kayıt · yön tahmin sonucu</h3><p>Analiz tamamlandığında tahmin edilen geliş yönü ve kayıt boyunca bulunan açıların değişimi burada gösterilir.</p></div>
+          <span class="real-result-state" id="realResultState" aria-live="polite">Kayıt bekleniyor</span>
+        </div>
+        <div class="real-result-grid">
+          <div class="real-result-card">
+            <h4>Geliş yönü göstergesi</h4>
+            <p>Merkez mikrofon dizisini, dışa uzanan ışın tahmin edilen kaynak yönünü gösterir.</p>
+            <div class="real-compass" id="realCompass">
+              <svg viewBox="0 0 300 300" role="img" aria-labelledby="realCompassTitle realCompassDesc">
+                <title id="realCompassTitle">Gerçek kayıttan tahmin edilen ses geliş yönü</title>
+                <desc id="realCompassDesc">Kayıt analiz edilmedi; yön tahmini bekleniyor.</desc>
+                <circle cx="150" cy="150" r="112" fill="none" stroke="#456b58" stroke-width="1" stroke-dasharray="3 6"/>
+                <circle cx="150" cy="150" r="76" fill="none" stroke="#365a49" stroke-width="1"/>
+                <circle cx="150" cy="150" r="38" fill="none" stroke="#365a49" stroke-width="1"/>
+                <path d="M38 150H262M150 38V262M71 71L229 229M229 71L71 229" stroke="#315344" stroke-width="1"/>
+                <g fill="#c1d6c6" font-size="9" font-weight="700" text-anchor="middle"><text x="150" y="25">+90°</text><text x="277" y="153">0°</text><text x="150" y="288">−90°</text><text x="23" y="153">±180°</text></g>
+                <g id="realCompassContent"><text class="real-result-empty" x="150" y="155" text-anchor="middle">Yön sonucu bekleniyor</text></g>
+              </svg>
+            </div>
+            <div class="real-result-legend"><span><i></i>Tahmin edilen yön</span><span><i class="reference"></i>Bilinen referans yönü</span></div>
+          </div>
+          <div class="real-result-card">
+            <h4>Kayıt pencerelerine göre açı</h4>
+            <p>Her nokta kısa bir kayıt penceresinin tahminidir; benzer değerler kararlı yön kestirimine işaret eder.</p>
+            <svg id="realAngleChart" class="real-angle-chart" viewBox="0 0 720 230" role="img" aria-label="Kayıt pencerelerine göre ses yönü tahminleri">
+              <g id="realAngleChartContent">
+                <text class="real-result-empty" x="360" y="115" text-anchor="middle">Dört kanallı kayıt analiz edilince grafik oluşur</text>
+              </g>
+            </svg>
+            <div class="real-result-legend"><span><i></i>Pencere başına açı tahmini</span><span><i class="reference"></i>Girilen bilinen açı</span></div>
+          </div>
+        </div>
+      </section>
       <div class="real-workflow" aria-labelledby="realWorkflowTitle">
         <div class="real-workflow-head"><h3 id="realWorkflowTitle">Donanımı bağladıktan sonra izleyeceğimiz yol</h3><p>Önce yön kestirimini kontrollü koşullarda doğrulayacağız. Her adımda kayıt dosyasını, ayarları ve gözlemleri saklayarak sonuçları tekrarlanabilir hale getireceğiz.</p></div>
         <ol class="real-steps">
@@ -1164,6 +1230,29 @@
       function clearRealMetrics() {
         $("realAngle").textContent="—"; $("realFrames").textContent="—"; $("realSpread").textContent="—"; $("realCalError").textContent="—";
         $("realPairs").innerHTML=pairs.map(([a,b])=>`<li>${String(a+1).padStart(2,"0")}–${String(b+1).padStart(2,"0")} · —</li>`).join("");
+        $("realResultState").textContent="Kayıt bekleniyor";
+        $("realCompass").classList.remove("has-result"); $("realAngleChart").classList.remove("has-result");
+        $("realCompassContent").innerHTML='<text class="real-result-empty" x="150" y="155" text-anchor="middle">Yön sonucu bekleniyor</text>';
+        $("realAngleChartContent").innerHTML='<text class="real-result-empty" x="360" y="115" text-anchor="middle">Dört kanallı kayıt analiz edilince grafik oluşur</text>';
+        $("realCompassDesc").textContent="Kayıt analiz edilmedi; yön tahmini bekleniyor.";
+      }
+      function renderRealResult(estimates,mean,referenceAngle) {
+        const pointAt=(angle,radius)=>{const rad=angle*Math.PI/180;return {x:150+Math.cos(rad)*radius,y:150-Math.sin(rad)*radius};};
+        const end=pointAt(mean,106), ref=Number.isFinite(referenceAngle)?pointAt(referenceAngle,86):null;
+        const compassMarkup=`<g class="real-bearing-layer"><line class="real-bearing-ray" x1="150" y1="150" x2="${end.x.toFixed(1)}" y2="${end.y.toFixed(1)}" stroke="#68dfb6" stroke-width="3" stroke-linecap="round"/><circle class="real-bearing-pulse" cx="${end.x.toFixed(1)}" cy="${end.y.toFixed(1)}" r="7" fill="none" stroke="#8ff1ca" stroke-width="1.5"/><circle class="real-bearing-point" cx="${end.x.toFixed(1)}" cy="${end.y.toFixed(1)}" r="5" fill="#f1cf83" stroke="#fff4d7" stroke-width="1.5"/><g fill="#f2d28c" stroke="#fff1cf" stroke-width="1"><circle cx="145" cy="145" r="4"/><circle cx="155" cy="145" r="4"/><circle cx="145" cy="155" r="4"/><circle cx="155" cy="155" r="4"/></g><text x="150" y="178" fill="#d6e8dc" font-size="9" font-weight="700" text-anchor="middle">MİKROFON DİZİSİ</text><text x="${(end.x+(end.x>150?10:-10)).toFixed(1)}" y="${(end.y-9).toFixed(1)}" fill="#fff0c9" font-size="10" font-weight="800" text-anchor="${end.x>150?"start":"end"}">${mean>0?"+":""}${mean.toFixed(1)}°</text>${ref?`<line x1="150" y1="150" x2="${ref.x.toFixed(1)}" y2="${ref.y.toFixed(1)}" stroke="#df9b63" stroke-width="2" stroke-dasharray="5 5"/><circle cx="${ref.x.toFixed(1)}" cy="${ref.y.toFixed(1)}" r="4" fill="#df9b63" stroke="#fff0d9" stroke-width="1"/>`:""}</g>`;
+        $("realCompassContent").innerHTML=compassMarkup;
+        $("realCompassDesc").textContent=`Tahmini ses geliş yönü ${mean>0?"+":""}${mean.toFixed(1)} derece${Number.isFinite(referenceAngle)?`; bilinen referans yönü ${referenceAngle>0?"+":""}${referenceAngle} derece`:""}.`;
+        const x0=55,x1=704,y0=25,y1=188, yFor=angle=>y1-((angle+180)/360)*(y1-y0);
+        const sorted=[...estimates].sort((a,b)=>a.start-b.start),count=sorted.length;
+        const grid=[180,90,0,-90,-180].map(angle=>{const y=yFor(angle);return `<line x1="${x0}" y1="${y.toFixed(1)}" x2="${x1}" y2="${y.toFixed(1)}" stroke="#e5ece5" stroke-width="1"/><text x="45" y="${(y+3).toFixed(1)}" fill="#78877e" font-size="9" text-anchor="end">${angle>0?"+":""}${angle}°</text>`;}).join("");
+        const refLine=Number.isFinite(referenceAngle)?`<line x1="${x0}" y1="${yFor(referenceAngle).toFixed(1)}" x2="${x1}" y2="${yFor(referenceAngle).toFixed(1)}" stroke="#df9b63" stroke-width="1.6" stroke-dasharray="6 5"/>`:"";
+        const coords=sorted.map((entry,i)=>({x:count===1?(x0+x1)/2:x0+i/(count-1)*(x1-x0),y:yFor(entry.angle),angle:entry.angle}));
+        const line=coords.map((p,i)=>`${i?"L":"M"}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
+        const dots=coords.map((p,i)=>`<circle class="real-chart-point" style="--real-point-delay:${Math.min(i*12,600)}ms" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3.1"><title>Pencere ${i+1}: ${p.angle>0?"+":""}${p.angle.toFixed(1)}°</title></circle>`).join("");
+        $("realAngleChartContent").innerHTML=`${grid}${refLine}<path class="real-chart-line" pathLength="900" d="${line}"/>${dots}<text x="${x0}" y="211" fill="#78877e" font-size="9">İLK PENCERE</text><text x="${x1}" y="211" fill="#78877e" font-size="9" text-anchor="end">SON PENCERE</text>`;
+        $("realResultState").textContent=`${count} pencere analiz edildi`;
+        $("realCompass").classList.remove("has-result"); $("realAngleChart").classList.remove("has-result");
+        requestAnimationFrame(()=>{ $("realCompass").classList.add("has-result"); $("realAngleChart").classList.add("has-result"); });
       }
       async function findRealDevices() {
         if(!navigator.mediaDevices?.getUserMedia) { setRealStatus("Bu tarayıcı mikrofon erişimini desteklemiyor. Dört kanallı WAV yükleyebilirsiniz.","error"); return; }
@@ -1210,7 +1299,7 @@
         if(channelRms.some(rms=>rms<Math.max(0.000001,Math.max(...channelRms)*0.001))) { setRealStatus("Dört kanalın hepsinde kullanılabilir ses yok. Ses kartı girişlerini, mikrofon bağlantılarını ve kanal sırasını kontrol edin.","error"); clearRealMetrics(); return; }
         const active=windows.filter(w=>w.rms>=Math.max(0.00001,peakRms*.28)).sort((a,b)=>b.rms-a.rms).slice(0,48);
         const spacing=realCalibrationConfig.spacing,pos=positions(spacing);
-        const estimates=active.map(w=>({...estimateDetails(w.segments,pos,sampleRate,spacing),rms:w.rms}));
+        const estimates=active.map(w=>({...estimateDetails(w.segments,pos,sampleRate,spacing),rms:w.rms,start:w.start}));
         const sx=estimates.reduce((sum,e)=>sum+Math.cos(e.angle*Math.PI/180),0), sy=estimates.reduce((sum,e)=>sum+Math.sin(e.angle*Math.PI/180),0);
         const mean=Math.atan2(sy,sx)*180/Math.PI, resultant=Math.hypot(sx,sy)/estimates.length;
         const spread=Math.sqrt(estimates.reduce((sum,e)=>sum+Math.pow(circularError(e.angle,mean),2),0)/estimates.length);
@@ -1220,6 +1309,7 @@
         $("realSpread").textContent=`${spread.toFixed(1)}°`;
         const referenceAngle=realCalibrationConfig.referenceAngle;
         const sourceDistance=realCalibrationConfig.sourceDistance;
+        renderRealResult(estimates,mean,referenceAngle);
         if(Number.isFinite(referenceAngle)) {
           const error=circularError(mean,referenceAngle);
           $("realCalError").textContent=`${Math.abs(error).toFixed(1)}°`;
