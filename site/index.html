@@ -137,6 +137,28 @@
     .tree-id { display:inline-flex; align-items:center; gap:8px; font-weight:700; }
     .tree-id::before { content:""; width:8px; height:8px; border-radius:50%; background:#4bbda0; box-shadow:0 0 0 3px #e0f2eb; }
     .mapper-empty { padding:24px !important; text-align:center; color:#80908a !important; }
+    .compare-head { display:flex; align-items:center; justify-content:space-between; gap:16px; margin:22px 0 12px; }
+    .compare-head h4 { margin:0; color:#29443e; font-size:15px; letter-spacing:-.015em; }
+    .compare-head p { margin:4px 0 0; color:#72827e; font-size:11px; }
+    .compare-button { flex:none; min-height:38px; padding:0 13px; border:1px solid #c8dad1; border-radius:10px; background:#fff; color:#176f61; font:inherit; font-size:11px; font-weight:750; cursor:pointer; transition:background .18s,border-color .18s,transform .18s; }
+    .compare-button:hover { background:#edf6f1; border-color:#9dc8b7; transform:translateY(-1px); }
+    .compare-button:focus-visible { outline:3px solid #89c9c1; outline-offset:2px; }
+    .compare-button:disabled { cursor:progress; opacity:.72; }
+    .compare-wrap { padding:9px; border:1px solid #cbd9ce; border-radius:17px; background:#102821; box-shadow:0 14px 30px rgba(20,48,38,.12); }
+    .compare-map { display:block; width:100%; aspect-ratio:5/3; border-radius:10px; overflow:hidden; }
+    .compare-legend { display:flex; flex-wrap:wrap; gap:16px; padding:11px 8px 2px; color:#d4e0d8; font-size:10px; }
+    .compare-key { display:inline-flex; align-items:center; gap:7px; }
+    .compare-key-mark { width:10px; height:10px; border-radius:50%; background:#88aa72; border:2px solid #c6d6a3; }
+    .compare-key-mark.estimate { background:#eafff5; border:2px solid #50d7b1; box-shadow:0 0 0 3px rgba(80,215,177,.16); }
+    .compare-key-mark.delta { width:17px; height:0; border:0; border-top:2px solid #e7cb81; border-radius:0; background:none; }
+    .compare-status { margin:8px 8px 2px; color:#a8c1b2; font-size:10px; }
+    .compare-estimate { transform-box:fill-box; transform-origin:center; }
+    .compare-wrap.is-playing .compare-delta { animation:compare-line .72s ease-out both; animation-delay:var(--compare-delay,0ms); }
+    .compare-wrap.is-playing .compare-estimate { animation:compare-pop .42s cubic-bezier(.16,.8,.25,1) both; animation-delay:calc(var(--compare-delay,0ms) + 480ms); }
+    .compare-wrap.is-playing .compare-truth { animation:truth-glow .5s ease-out both; animation-delay:var(--compare-delay,0ms); }
+    @keyframes compare-line { from { stroke-dashoffset:var(--dash-length); opacity:.05; } to { stroke-dashoffset:0; opacity:.9; } }
+    @keyframes compare-pop { 0% { opacity:0; transform:scale(.2); } 70% { opacity:1; transform:scale(1.35); } 100% { opacity:1; transform:scale(1); } }
+    @keyframes truth-glow { from { filter:brightness(1.9); } to { filter:brightness(1); } }
     .mapper-note { margin:14px 2px 0; color:#718078; font-size:10px; line-height:1.6; }
     @keyframes forest-wave-out { from { opacity:.62; transform:scale(.15); } to { opacity:0; transform:scale(3.2); } }
     @keyframes forest-return { to { stroke-dashoffset:-24; } }
@@ -170,6 +192,9 @@
       .mapper-stat { padding:8px 6px; }
       .mapper-stat strong { font-size:14px; }
       .mapper-lower-head { display:block; }
+      .compare-head { align-items:flex-start; }
+      .compare-button { max-width:135px; white-space:normal; }
+      .compare-legend { gap:10px; font-size:9px; }
     }
     .chart-panel { padding:18px 21px 14px; min-width:0; }
     .chart-head { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; }
@@ -402,6 +427,21 @@
             <thead><tr><th>Ağaç</th><th>X · saha ekseni (m)</th><th>Y · saha ekseni (m)</th><th>Menzil (m)</th><th>Yön (°)</th><th>Konum hatası (m)</th></tr></thead>
             <tbody id="mappedTreeRows" aria-live="polite"><tr><td class="mapper-empty" colspan="6">Yankı taraması başlatıldığında tahmini ağaç konumları burada listelenir.</td></tr></tbody>
           </table>
+        </div>
+        <div class="compare-head">
+          <div><h4>Gerçek konum ve hesaplanan konum</h4><p>Ağaç gövdesi ile yankıdan bulunan nokta arasındaki farkı sahada görün.</p></div>
+          <button class="compare-button" id="compareButton" type="button">Animasyonu yeniden oynat</button>
+        </div>
+        <div class="compare-wrap" id="compareWrap">
+          <svg id="mapperCompare" class="compare-map" viewBox="0 0 1000 600" role="img" aria-label="Orman sahasında gerçek ağaç gövdeleri ile akustik ölçümden hesaplanan konumların karşılaştırma haritası">
+            <g id="mapperCompareContent"></g>
+          </svg>
+          <div class="compare-legend" aria-label="Konum karşılaştırma işaretleri">
+            <span class="compare-key"><i class="compare-key-mark"></i>Senaryodaki gerçek gövde</span>
+            <span class="compare-key"><i class="compare-key-mark estimate"></i>Hesaplanan konum</span>
+            <span class="compare-key"><i class="compare-key-mark delta"></i>Konum farkı</span>
+          </div>
+          <p class="compare-status" id="compareStatus" aria-live="polite">Noktalar çiziliyor…</p>
         </div>
       </section>
       <p class="mapper-note"><strong>Model sınırı:</strong> Bu, bilinen konumdaki tek bir verici/alıcı dizisinden gövde yankılarını kullanarak yapılan sentetik ve 2B bir taslaktır. Ağaç örtüsü/zemin yankıları gerçek ölçüm değildir. Daha geniş alan haritası için diziyi farklı noktalara taşıyıp konumları (GPS/ölçüm) birleştirmek; gerçek sinyali eşzamanlı kaydedip kalibre etmek gerekir.</p>
@@ -649,6 +689,8 @@
       const mapMics = [[49.65,29.65],[50.35,29.65],[49.65,30.35],[50.35,30.35]];
       let mapRunNumber = 0;
       let mapRandomState = 20261110;
+      let latestMapDetections = [];
+      let compareAnimationTimer = 0;
       function mapRandom() {
         mapRandomState ^= mapRandomState << 13;
         mapRandomState ^= mapRandomState >>> 17;
@@ -693,6 +735,44 @@
         s+=`<g transform="translate(842 566)"><rect width="140" height="22" rx="11" fill="#102821" fill-opacity=".86" stroke="#91b7a0" stroke-opacity=".32"/><path d="M12 12H58" stroke="#d5e4d4" stroke-width="2"/><path d="M12 8V16M58 8V16" stroke="#d5e4d4" stroke-width="1.5"/><text x="66" y="15" fill="#d5e4d4" font-size="10">10 m</text></g>`;
         for(let x=0;x<=1000;x+=200) s+=`<text x="${x+4}" y="589" fill="#c2d2c4" fill-opacity=".84" font-size="9">${x/10} m</text>`;
         return s;
+      }
+      function comparisonMarkup(treeCount, detections) {
+        const origin={x:50,y:30}, found=new Map(detections.map(d=>[d.tree.index,d]));
+        const contours=[
+          "M-20 120 C110 20 215 35 330 118 S540 208 650 116 S855 22 1020 106",
+          "M-20 440 C110 342 218 356 332 438 S542 528 652 436 S860 342 1020 426",
+          "M110 -20 C230 100 205 212 110 305 S10 498 130 620",
+          "M890 -20 C770 100 795 212 890 305 S990 498 870 620"
+        ];
+        let s=`<defs><linearGradient id="compareBg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#294638"/><stop offset=".55" stop-color="#1c382f"/><stop offset="1" stop-color="#142c27"/></linearGradient><radialGradient id="compareHalo"><stop stop-color="#68dcb2" stop-opacity=".14"/><stop offset="1" stop-color="#68dcb2" stop-opacity="0"/></radialGradient></defs><rect width="1000" height="600" rx="12" fill="url(#compareBg)"/><ellipse cx="500" cy="300" rx="380" ry="310" fill="url(#compareHalo)"/><g fill="none" stroke="#b6cfb7" stroke-opacity=".18" stroke-width="1.2">${contours.map(d=>`<path d="${d}"/>`).join("")}</g>`;
+        for(let x=0;x<=1000;x+=100) s+=`<line x1="${x}" y1="0" x2="${x}" y2="600" stroke="#d6e5d2" stroke-opacity=".1" stroke-dasharray="2 8"/>`;
+        for(let y=0;y<=600;y+=100) s+=`<line x1="0" y1="${y}" x2="1000" y2="${y}" stroke="#d6e5d2" stroke-opacity=".1" stroke-dasharray="2 8"/>`;
+        for(const tree of forestTrees.slice(0,treeCount)) {
+          const x=tree.x*10,y=tree.y*10,r=8+tree.reflectivity*2,d=found.get(tree.index),delay=Math.min(tree.index,18)*55;
+          if(d) { const dashLength=Math.hypot(d.x*10-x,d.y*10-y).toFixed(1); s+=`<line class="compare-delta" style="--compare-delay:${delay}ms;--dash-length:${dashLength}" x1="${x}" y1="${y}" x2="${d.x*10}" y2="${d.y*10}" stroke="#e7cb81" stroke-width="1.8" stroke-dasharray="${dashLength}" stroke-dashoffset="${dashLength}" opacity=".9"/>`; }
+          const details=d?`Gerçek (${tree.x.toFixed(1)}, ${tree.y.toFixed(1)}) m · hesaplanan (${d.x.toFixed(1)}, ${d.y.toFixed(1)}) m · fark ${d.error.toFixed(1)} m`:`Bu ağaç için yankı algılanmadı · gerçek konum (${tree.x.toFixed(1)}, ${tree.y.toFixed(1)}) m`;
+          s+=`<g class="compare-truth" style="--compare-delay:${delay}ms" transform="translate(${x} ${y})"><ellipse cy="${r*.76}" rx="${r*.8}" ry="${r*.34}" fill="#071b18" opacity=".26"/><path d="M-1 2V${r*.58}M1 2V${r*.58}" stroke="#b69766" stroke-width="2" stroke-linecap="round"/><circle r="${r}" fill="#557e59" stroke="#c5d6a3" stroke-width="1.6"/><circle cx="-${r*.3}" cy="-${r*.2}" r="${r*.53}" fill="#72966a"/><circle cx="${r*.29}" cy="-${r*.2}" r="${r*.51}" fill="#64875c"/><circle cy="${r*.24}" r="${r*.48}" fill="#4c714d"/><circle r="2" fill="#e8d79b"/><title>Ağaç ${String(tree.index+1).padStart(2,"0")} · ${details}</title></g>`;
+          if(d) s+=`<g transform="translate(${d.x*10} ${d.y*10})"><g class="compare-estimate" style="--compare-delay:${delay}ms"><circle r="12" fill="#5de0b8" fill-opacity=".16"/><circle r="7" fill="#f3fff9" stroke="#50d7b1" stroke-width="2.5"/><circle r="2.2" fill="#167a67"/><title>Ağaç ${String(tree.index+1).padStart(2,"0")} tahmini</title></g></g>`;
+        }
+        s+=`<g transform="translate(500 300)"><circle r="22" fill="#17372e" stroke="#e5cb85" stroke-opacity=".85" stroke-width="1.3"/><path d="M-8 -5H-2L7 -12V12L-2 5H-8Z" fill="#f0ad76" stroke="#fff2db" stroke-width="1.4"/><path d="M11 -7Q20 0 11 7" fill="none" stroke="#f0ad76" stroke-width="1.8"/><circle cx="-10" cy="-10" r="2.4" fill="#f2d68f"/><circle cx="10" cy="-10" r="2.4" fill="#f2d68f"/><circle cx="-10" cy="10" r="2.4" fill="#f2d68f"/><circle cx="10" cy="10" r="2.4" fill="#f2d68f"/><title>Verici ve dört mikrofonlu dizi</title></g>`;
+        s+=`<g transform="translate(16 18)"><rect width="282" height="30" rx="15" fill="#102821" fill-opacity=".88" stroke="#91b7a0" stroke-opacity=".32"/><text x="14" y="19" fill="#dce9de" font-size="10" font-weight="750" letter-spacing=".55">GERÇEK ↔ HESAPLANAN · ${detections.length} EŞLEŞME</text></g><g transform="translate(842 566)"><rect width="140" height="22" rx="11" fill="#102821" fill-opacity=".86" stroke="#91b7a0" stroke-opacity=".32"/><path d="M12 12H58M12 8V16M58 8V16" stroke="#d5e4d4" stroke-width="1.5"/><text x="66" y="15" fill="#d5e4d4" font-size="10">10 m</text></g>`;
+        for(let x=0;x<=1000;x+=200) s+=`<text x="${x+4}" y="589" fill="#c2d2c4" fill-opacity=".84" font-size="9">${x/10} m</text>`;
+        return s;
+      }
+      function playComparisonAnimation() {
+        const wrap=$("compareWrap"), button=$("compareButton"), delay=1500+Math.min(latestMapDetections.length,19)*55;
+        clearTimeout(compareAnimationTimer);
+        $("mapperCompareContent").innerHTML=comparisonMarkup(Number($("treeCount").value),latestMapDetections);
+        wrap.classList.remove("is-playing");
+        void wrap.offsetWidth;
+        wrap.classList.add("is-playing");
+        button.disabled=true;
+        $("compareStatus").textContent=latestMapDetections.length?`Gerçek gövdeler ve ${latestMapDetections.length} hesaplanan yankı noktası sırayla karşılaştırılıyor.`:"Bu ayarlarda eşleşen yankı noktası yok; gerçek senaryo ağaçları gösteriliyor.";
+        compareAnimationTimer=window.setTimeout(()=>{
+          wrap.classList.remove("is-playing");
+          button.disabled=false;
+          $("compareStatus").textContent=latestMapDetections.length?`${latestMapDetections.length} eşleşme gösterildi · bağlantı çizgisi konum farkını belirtir.`:"Algılanan nokta bulunamadı. Sinyal koşullarını ayarlayıp yeniden tarayın.";
+        },delay);
       }
       async function runForestMapper(animate=true) {
         const count=Number($("treeCount").value), snr=Number($("mapSnr").value), reflection=Number($("reflection").value);
@@ -745,12 +825,14 @@
           errors.push(error);
         }
         $("mapperForestContent").innerHTML=mapperMarkup(count,detections);
+        latestMapDetections=detections;
         const rows=$("mappedTreeRows");
         rows.innerHTML=detections.length?detections.map((d,index)=>`<tr style="--row-delay:${Math.min(index,18)*45}ms"><td><span class="tree-id">Ağaç ${String(d.tree.index+1).padStart(2,"0")}</span></td><td class="coord">${d.x.toFixed(1)}</td><td class="coord">${d.y.toFixed(1)}</td><td>${d.range.toFixed(1)}</td><td>${d.bearing>=0?"+":""}${d.bearing.toFixed(1)}°</td><td>${d.error.toFixed(1)}</td></tr>`).join(""):`<tr><td class="mapper-empty" colspan="6">Bu ayarlarda güvenilir yankı algılanmadı. Sinyal/gürültü veya yansıma değerini artırıp yeniden deneyin.</td></tr>`;
         $("mappedTrees").textContent=`${detections.length} / ${count}`;
         $("mapError").textContent=errors.length?`${(errors.reduce((a,b)=>a+b,0)/errors.length).toFixed(1)} m`:"—";
         $("mapCoverage").textContent=`${Math.round(detections.length/count*100)}%`;
         $("detectionCountTag").textContent=`${detections.length} / ${count} ağaç bulundu`;
+        playComparisonAnimation();
         if(animate) {
           progress.setAttribute("aria-valuenow","100"); progressBar.style.width="100%";
           $("mapSceneStatus").textContent=`Tarama tamamlandı · ${detections.length} yankı noktası`;
@@ -848,6 +930,7 @@
         $("mapHint").textContent="Ayarlar değişti · yeni yankı taramasını çalıştırın.";
       }));
       $("mapButton").addEventListener("click",runForestMapper);
+      $("compareButton").addEventListener("click",playComparisonAnimation);
       window.addEventListener("resize", () => {
         updateSingle();
         $("chartContent").innerHTML = chartMarkup(latestRows);
