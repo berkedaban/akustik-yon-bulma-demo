@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="light">
   <meta name="theme-color" content="#f4f6f3">
-  <meta name="description" content="Dört mikrofon dizisi, GCC-PHAT ve sentetik yankı modeliyle ses kaynağının geliş yönünü etkileşimli olarak inceleyin.">
+  <meta name="description" content="Dört mikrofonla GCC-PHAT yön tahmini ve akustik yankılardan sentetik orman ağacı konum haritalama simülasyonlarını inceleyin.">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Akustik Yön Bulma | Bitirme Projesi Simülasyonu">
-  <meta property="og:description" content="Mikrofon aralığı, gürültü ve yankının ses yönü tahminini nasıl etkilediğini keşfedin.">
+  <meta property="og:description" content="Akustik yön tahmini ve yankı tabanlı ağaç konum haritalama simülasyonları.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%23087f78'/%3E%3Cpath d='M7 21c4-12 8 12 13 0s9-12 13 0' fill='none' stroke='white' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
   <title>Akustik Yön Bulma | Bitirme Projesi Simülasyonu</title>
   <style>
@@ -140,7 +140,7 @@
     .compare-head { display:flex; align-items:center; justify-content:space-between; gap:16px; margin:22px 0 12px; }
     .compare-head h4 { margin:0; color:#29443e; font-size:15px; letter-spacing:-.015em; }
     .compare-head p { margin:4px 0 0; color:#72827e; font-size:11px; }
-    .compare-button { flex:none; min-height:38px; padding:0 13px; border:1px solid #c8dad1; border-radius:10px; background:#fff; color:#176f61; font:inherit; font-size:11px; font-weight:750; cursor:pointer; transition:background .18s,border-color .18s,transform .18s; }
+    .compare-button { flex:none; min-height:44px; padding:0 13px; border:1px solid #c8dad1; border-radius:10px; background:#fff; color:#176f61; font:inherit; font-size:11px; font-weight:750; cursor:pointer; transition:background .18s,border-color .18s,transform .18s; }
     .compare-button:hover { background:#edf6f1; border-color:#9dc8b7; transform:translateY(-1px); }
     .compare-button:focus-visible { outline:3px solid #89c9c1; outline-offset:2px; }
     .compare-button:disabled { cursor:progress; opacity:.72; }
@@ -156,6 +156,7 @@
     .compare-wrap.is-playing .compare-delta { animation:compare-line .72s ease-out both; animation-delay:var(--compare-delay,0ms); }
     .compare-wrap.is-playing .compare-estimate { animation:compare-pop .42s cubic-bezier(.16,.8,.25,1) both; animation-delay:calc(var(--compare-delay,0ms) + 480ms); }
     .compare-wrap.is-playing .compare-truth { animation:truth-glow .5s ease-out both; animation-delay:var(--compare-delay,0ms); }
+    .visual-panel:not(.is-visible) *, .mapper-map-wrap:not(.is-visible) *, .compare-wrap:not(.is-visible) * { animation-play-state:paused !important; }
     @keyframes compare-line { from { stroke-dashoffset:var(--dash-length); opacity:.05; } to { stroke-dashoffset:0; opacity:.9; } }
     @keyframes compare-pop { 0% { opacity:0; transform:scale(.2); } 70% { opacity:1; transform:scale(1.35); } 100% { opacity:1; transform:scale(1); } }
     @keyframes truth-glow { from { filter:brightness(1.9); } to { filter:brightness(1); } }
@@ -195,6 +196,9 @@
       .compare-head { align-items:flex-start; }
       .compare-button { max-width:135px; white-space:normal; }
       .compare-legend { gap:10px; font-size:9px; }
+    }
+    @media (max-width:760px) {
+      .method-steps { grid-template-columns:minmax(0,1fr); gap:12px; }
     }
     .chart-panel { padding:18px 21px 14px; min-width:0; }
     .chart-head { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; }
@@ -424,8 +428,8 @@
         </div>
         <div class="mapper-table-wrap">
           <table class="mapper-table" aria-label="Yankı ölçümünden tespit edilen ağaçların koordinat listesi">
-            <thead><tr><th>Ağaç</th><th>X · saha ekseni (m)</th><th>Y · saha ekseni (m)</th><th>Menzil (m)</th><th>Yön (°)</th><th>Konum hatası (m)</th></tr></thead>
-            <tbody id="mappedTreeRows" aria-live="polite"><tr><td class="mapper-empty" colspan="6">Yankı taraması başlatıldığında tahmini ağaç konumları burada listelenir.</td></tr></tbody>
+            <thead><tr><th scope="col">Ağaç</th><th scope="col">X · saha ekseni (m)</th><th scope="col">Y · saha ekseni (m)</th><th scope="col">Menzil (m)</th><th scope="col">Yön (°)</th><th scope="col">Konum hatası (m)</th></tr></thead>
+            <tbody id="mappedTreeRows"><tr><td class="mapper-empty" colspan="6">Yankı taraması başlatıldığında tahmini ağaç konumları burada listelenir.</td></tr></tbody>
           </table>
         </div>
         <div class="compare-head">
@@ -691,6 +695,8 @@
       let mapRandomState = 20261110;
       let latestMapDetections = [];
       let compareAnimationTimer = 0;
+      let comparisonPending = false;
+      let resizeFrameQueued = false;
       function mapRandom() {
         mapRandomState ^= mapRandomState << 13;
         mapRandomState ^= mapRandomState >>> 17;
@@ -764,6 +770,13 @@
         clearTimeout(compareAnimationTimer);
         $("mapperCompareContent").innerHTML=comparisonMarkup(Number($("treeCount").value),latestMapDetections);
         wrap.classList.remove("is-playing");
+        if(!wrap.classList.contains("is-visible")) {
+          comparisonPending=true;
+          button.disabled=false;
+          $("compareStatus").textContent="Karşılaştırma haritası hazır · alana geldiğinizde animasyon başlayacak.";
+          return;
+        }
+        comparisonPending=false;
         void wrap.offsetWidth;
         wrap.classList.add("is-playing");
         button.disabled=true;
@@ -912,7 +925,7 @@
         progressBar.style.width = "100%";
         btn.textContent="Açı taramasını yeniden çalıştır";
       }
-      Object.values(controls).forEach(el => el.addEventListener("input", () => {
+      const invalidateSweep=() => {
         updateSingle();
         latestRows = [];
         $("mae").textContent="—"; $("success").textContent="—"; $("count").textContent="—";
@@ -921,7 +934,8 @@
         $("chartNote").innerHTML="Ayar değişti<br>taramayı yeniden çalıştırın";
         document.querySelector(".scan-progress").setAttribute("aria-valuenow", "0");
         $("scanProgressBar").style.width = "0%";
-      }));
+      };
+      Object.values(controls).forEach(el => el.addEventListener(el===controls.repeats?"change":"input", invalidateSweep));
       $("runButton").addEventListener("click", runSweep);
       [$("treeCount"),$("mapSnr"),$("reflection")].forEach(el=>el.addEventListener("input",()=>{
         $("treeCountValue").textContent=`${$("treeCount").value} ağaç`;
@@ -931,9 +945,24 @@
       }));
       $("mapButton").addEventListener("click",runForestMapper);
       $("compareButton").addEventListener("click",playComparisonAnimation);
+      const animatedSections=[document.querySelector(".visual-panel"),document.querySelector(".mapper-map-wrap"),$("compareWrap")];
+      if("IntersectionObserver" in window) {
+        const visibilityObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{
+          entry.target.classList.toggle("is-visible",entry.isIntersecting);
+          if(entry.target.id==="compareWrap"&&entry.isIntersecting&&comparisonPending) playComparisonAnimation();
+        }),{threshold:.04});
+        animatedSections.forEach(section=>visibilityObserver.observe(section));
+      } else {
+        animatedSections.forEach(section=>section.classList.add("is-visible"));
+      }
       window.addEventListener("resize", () => {
-        updateSingle();
-        $("chartContent").innerHTML = chartMarkup(latestRows);
+        if(resizeFrameQueued) return;
+        resizeFrameQueued=true;
+        requestAnimationFrame(()=>{
+          resizeFrameQueued=false;
+          updateSingle();
+          $("chartContent").innerHTML = chartMarkup(latestRows);
+        });
       });
       updateSingle();
       runForestMapper(false);
